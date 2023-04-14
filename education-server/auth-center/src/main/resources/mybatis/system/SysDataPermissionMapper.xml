@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.system.mapper.DataPermissionMapper">
+    <resultMap type="DataPermissionEntity" id="DataPermissionEntity">
+        <id property="id" column="id"/>
+        <result property="resourceId" column="resource_id"/>
+        <result property="resourceCode" column="resource_code"/>
+        <result property="resourceName" column="resource_name"/>
+        <result property="scopeCode" column="scope_code"/>
+        <result property="rule" column="rule"/>
+        <result property="subjectType" column="subject_type"/>
+        <result property="refSql" column="ref_sql"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="permissionData" column="permission_data"/>
+        <result property="columnName" column="column_name"/>
+        <result property="virtualResource" column="virtual_resource"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <resultMap type="DataPermissionDTO" id="DataPermissionDTO">
+        <id property="id" column="id"/>
+        <result property="resourceId" column="resource_id"/>
+        <result property="resourceCode" column="resource_code"/>
+        <result property="resourceName" column="resource_name"/>
+        <result property="scopeCode" column="scope_code"/>
+        <result property="rule" column="rule"/>
+        <result property="subjectType" column="subject_type"/>
+        <result property="subjectName" column="subject_name"/>
+        <result property="refSql" column="ref_sql"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="permissionData" column="permission_data"/>
+        <result property="columnName" column="column_name"/>
+        <result property="virtualResource" column="virtual_resource"/>
+    </resultMap>
+    <select id="getPage" resultMap="DataPermissionDTO">
+
+        SELECT t1.id,
+        t1.resource_code,
+        t1.resource_name,
+        t1.column_name,
+        t1.resource_id,
+        t1.scope_code,
+        t1.rule,
+        t1.subject_type,
+        t1.subject_id,
+        t1.permission_data,
+        t2.role_name as subject_name
+        FROM sys_data_permission t1
+        LEFT JOIN sys_role t2 ON t1.subject_id = t2.role_id
+        AND t2.`status` = 0
+        AND t2.dr = 0
+        where 1=1
+        <if test="vo.resourceCode !=null and vo.resourceCode.length() > 0">
+            and t1.resource_code =#{vo.resourceCode}
+        </if>
+        <if test="vo.scopeCode !=null and vo.scopeCode.length() > 0">
+            and t1.scope_code =#{vo.scopeCode}
+        </if>
+        <if test="vo.subjectId !=null and vo.subjectId !=0">
+            and t1.subject_id =#{vo.subjectId}
+        </if>
+        ORDER BY t1.create_time DESC
+    </select>
+    <select id="getOne" resultMap="DataPermissionEntity"
+            parameterType="com.czyl.project.system.domain.DataPermissionEntity">
+
+        select * from sys_data_permission
+
+        <where>
+            1=1
+            <if test="id != null ">and id=#{id}</if>
+            <if test="resourceCode != null and resourceCode != ''">and resource_code=#{resourceCode}</if>
+            <if test="resourceId != null ">and resource_id=#{resourceId}</if>
+            <if test="resourceName != null and resourceName != ''">and resource_name=#{resourceName}</if>
+            <if test="scopeCode != null and scopeCode != ''">and scope_code =#{scopeCode}</if>
+            <if test="subjectId !=null ">and subject_id=#{subjectId}</if>
+            <if test="columnName != null and columnName != ''">and column_name=#{columnName}</if>
+        </where>
+
+    </select>
+    <select id="list" resultMap="DataPermissionEntity"
+            parameterType="com.czyl.project.system.domain.DataPermissionEntity">
+
+        select * from sys_data_permission
+
+        <where>
+            1=1
+            <if test="id != null ">and id=#{id}</if>
+            <if test="resourceCode != null and resourceCode != ''">and resource_code=#{resourceCode}</if>
+            <if test="resourceId != null ">and resource_id=#{resourceId}</if>
+            <if test="resourceName != null and resourceName != ''">and resource_name=#{resourceName}</if>
+            <if test="scopeCode != null and scopeCode != ''">and scope_code =#{scopeCode}</if>
+            <if test="subjectId !=null ">and subject_id=#{subjectId}</if>
+            <if test="columnName != null and columnName != ''">and column_name=#{columnName}</if>
+        </where>
+
+    </select>
+    <select id="count" resultType="java.lang.Integer"
+            parameterType="com.czyl.project.system.domain.DataPermissionEntity">
+
+        select count(*) from sys_data_permission
+
+        <where>
+            1=1
+            <if test="id != null ">and id!=#{id}</if>
+            <if test="resourceCode != null and resourceCode != ''">and resource_code=#{resourceCode}</if>
+            <if test="resourceId != null ">and resource_id=#{resourceId}</if>
+            <if test="resourceName != null and resourceName != ''">and resource_name=#{resourceName}</if>
+            <if test="scopeCode != null and scopeCode != ''">and scope_code =#{scopeCode}</if>
+            <if test="subjectId !=null ">and subject_id=#{subjectId}</if>
+            <if test="columnName != null and columnName != ''">and column_name=#{columnName}</if>
+        </where>
+
+    </select>
+
+    <insert id="insert" parameterType="com.czyl.project.system.domain.DataPermissionEntity">
+        insert into sys_data_permission (
+        <if test="id != null ">id,</if>
+        <if test="resourceId != null ">resource_id,</if>
+        <if test="resourceCode != null and resourceCode != '' ">resource_code,</if>
+        <if test="resourceName != null and resourceName != '' ">resource_name,</if>
+        <if test="scopeCode != null and scopeCode != '' ">scope_code,</if>
+        <if test="rule != null ">rule,</if>
+        <if test="subjectType != null and subjectType != ''  ">subject_type,</if>
+        <if test="refSql != null and refSql != '' ">ref_sql,</if>
+        <if test="subjectId != null ">subject_id,</if>
+        <if test="permissionData != null and permissionData != '' ">permission_data,</if>
+        <if test="columnName != null and columnName != '' ">column_name,</if>
+        <if test="virtualResource != null ">virtual_resource,</if>
+        <if test="createBy != null ">create_by,</if>
+        <if test="createTime != null ">create_time</if>
+        )values(
+        <if test="id != null ">#{id},</if>
+        <if test="resourceId != null ">#{resourceId},</if>
+        <if test="resourceCode != null and resourceCode != ''">#{resourceCode},</if>
+        <if test="resourceName != null and resourceName != ''">#{resourceName},</if>
+        <if test="scopeCode != null and scopeCode != '' ">#{scopeCode},</if>
+        <if test="rule != null ">#{rule},</if>
+        <if test="subjectType != null and subjectType != ''  ">#{subjectType},</if>
+        <if test="refSql != null and refSql != '' ">#{refSql},</if>
+        <if test="subjectId != null ">#{subjectId},</if>
+        <if test="permissionData != null and permissionData != '' ">#{permissionData},</if>
+        <if test="columnName != null and columnName != '' ">#{columnName},</if>
+        <if test="virtualResource != null ">#{virtualResource},</if>
+        <if test="createBy != null ">#{createBy},</if>
+        <if test="createTime != null ">#{createTime}</if>
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.czyl.project.system.domain.DataPermissionEntity">
+        update sys_data_permission
+        <set>
+            <if test="resourceId != null ">resource_id=#{resourceId},</if>
+            <if test="resourceCode != null and resourceCode != '' ">resource_code=#{resourceCode},</if>
+            <if test="resourceName != null and resourceName != '' ">resource_name=#{resourceName},</if>
+            <if test="scopeCode != null and scopeCode != '' ">scope_code=#{scopeCode},</if>
+            <if test="rule != null ">rule=#{rule},</if>
+            <if test="subjectType != null and subjectType != ''  ">subject_type=#{subjectType},</if>
+            <if test="refSql != null and refSql != '' ">ref_sql=#{refSql},</if>
+            <if test="subjectId != null ">subject_id=#{subjectId},</if>
+            <if test="permissionData != null and permissionData != '' ">permission_data=#{permissionData},</if>
+            <if test="columnName != null and columnName != '' ">column_name=#{columnName},</if>
+            <if test="virtualResource != null ">virtual_resource=#{virtualResource},</if>
+            <if test="createBy != null ">create_by=#{createBy},</if>
+            <if test="createTime != null ">create_time=#{createTime}</if>
+        </set>
+        where id=#{id}
+
+    </update>
+
+    <delete id="remove">
+        delete from sys_data_permission where
+        id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

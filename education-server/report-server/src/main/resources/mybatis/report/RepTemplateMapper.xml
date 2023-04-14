@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.report.mapper.RepTemplateMapper">
+    
+    <resultMap type="RepTemplate" id="RepTemplateResult">
+        <result property="pkTemplate"    column="pk_template"    />
+        <result property="code"    column="code"    />
+        <result property="name"    column="name"    />
+        <result property="formatjson"    column="formatjson"    />
+        <result property="formathtml"    column="formathtml"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="version"    column="version"    />
+        <result property="description"    column="description"    />
+        <result property="dr"    column="dr"    />
+        <result property="statue"    column="statue"    />
+        <result property="orgId"    column="org_id"    />
+    </resultMap>
+
+    <sql id="selectRepTemplateVo">
+        select pk_template, code, name, formatjson, formathtml, create_by, create_time, update_by, update_time, version, description, dr, statue, org_id from rep_template
+    </sql>
+
+    <select id="selectRepTemplateList" parameterType="RepTemplate" resultMap="RepTemplateResult">
+        <include refid="selectRepTemplateVo"/>
+        <where>  
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="formatjson != null  and formatjson != ''"> and formatjson = #{formatjson}</if>
+            <if test="formathtml != null  and formathtml != ''"> and formathtml = #{formathtml}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="statue != null "> and statue = #{statue}</if>
+            <if test="orgId != null "> and org_id = #{orgId}</if>
+        </where>
+    </select>
+    
+    <select id="selectRepTemplateById" parameterType="Long" resultMap="RepTemplateResult">
+        <include refid="selectRepTemplateVo"/>
+        where pk_template = #{pkTemplate}
+    </select>
+        
+    <insert id="insertRepTemplate" parameterType="RepTemplate">
+        insert into rep_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkTemplate != null ">pk_template,</if>
+            <if test="code != null  and code != ''">code,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="formatjson != null  and formatjson != ''">formatjson,</if>
+            <if test="formathtml != null  and formathtml != ''">formathtml,</if>
+            <if test="createBy != null ">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null ">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="version != null ">version,</if>
+            <if test="description != null  and description != ''">description,</if>
+            <if test="dr != null ">dr,</if>
+            <if test="statue != null ">statue,</if>
+            <if test="orgId != null ">org_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkTemplate != null ">#{pkTemplate},</if>
+            <if test="code != null  and code != ''">#{code},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="formatjson != null  and formatjson != ''">#{formatjson},</if>
+            <if test="formathtml != null  and formathtml != ''">#{formathtml},</if>
+            <if test="createBy != null ">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null ">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="description != null  and description != ''">#{description},</if>
+            <if test="dr != null ">#{dr},</if>
+            <if test="statue != null ">#{statue},</if>
+            <if test="orgId != null ">#{orgId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRepTemplate" parameterType="RepTemplate">
+        update rep_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null  and code != ''">code = #{code},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="formatjson != null  and formatjson != ''">formatjson = #{formatjson},</if>
+            <if test="formathtml != null  and formathtml != ''">formathtml = #{formathtml},</if>
+            <if test="createBy != null ">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null ">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="description != null  and description != ''">description = #{description},</if>
+            <if test="dr != null ">dr = #{dr},</if>
+            <if test="statue != null ">statue = #{statue},</if>
+            <if test="orgId != null ">org_id = #{orgId},</if>
+        </trim>
+        where pk_template = #{pkTemplate}
+    </update>
+
+    <delete id="deleteRepTemplateById" parameterType="Long">
+        delete from rep_template where pk_template = #{pkTemplate}
+    </delete>
+
+    <delete id="deleteRepTemplateByIds" parameterType="String">
+        delete from rep_template where pk_template in 
+        <foreach item="pkTemplate" collection="array" open="(" separator="," close=")">
+            #{pkTemplate}
+        </foreach>
+    </delete>
+    
+</mapper>

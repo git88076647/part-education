@@ -1,0 +1,29 @@
+# 数据源配置
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092 
+    listener:      missing-topics-fatal: false
+      #启用几个消费者      concurrency: 5
+          # 消费者
+    consumer: 
+                # 当kafka中没有初始offset或offset超出范围时将自动重置offset
+      # earliest:重置为分区中最小的offset;
+      # latest:重置为分区中最新的offset(消费分区中新产生的数据);
+      # none:只要有一个分区不存在已提交的offset,就抛出异常;
+      auto-offset-reset: earliest
+                #默认消费组
+      group-id: log-server-group
+          # 生产者
+    producer: 
+                 #发送失败重试次数
+      retries: 0
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.apache.kafka.common.serialization.StringSerializer  # 缓存 redis 配置
+  redis:
+    # 地址 如果要用单机redis 注释 cluster及以下，启用host
+    host: db.com
+    # 端口，默认为6379
+    port: 6379
+    #password: czyl2010
+    # 连接超时时间
+    timeout: 12s

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.system.mapper.BizconfigMapper">
+    
+    <resultMap type="Bizconfig" id="BizconfigResult">
+        <result property="remark"    column="remark"    />
+        <result property="value"    column="value"    />
+        <result property="key"    column="key"    />
+        <result property="version"    column="version"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="id"    column="id"    />
+        <result property="createByName"    column="createByName"    />
+        <result property="updateByName"    column="updateByName"    />
+    </resultMap>
+
+    <sql id="selectBizconfigVo">
+        select uc.nick_name createByName, uu.nick_name updateByName, bc.remark, bc.`value`, bc.`key`, bc.version, bc.update_time, bc.update_by, bc.create_time, bc.create_by, bc.id from sys_bizconfig bc
+        left join sys_user uc on uc.user_id=bc.create_by
+        left join sys_user uu on uu.user_id=bc.update_by
+    </sql>
+
+    <select id="selectList" parameterType="Bizconfig" resultMap="BizconfigResult">
+        <include refid="selectBizconfigVo"/>
+        <where>
+            <if test="value != null and value != '' "> and bc.`value` = #{value}</if>
+            <if test="key != null and key != '' "> and bc.`key` = #{key}</if>
+            <if test="searchValue != null and searchValue != '' "> and (bc.`key` like concat('%',#{searchValue},'%') or bc.`value` like concat('%',#{searchValue},'%' ))</if>
+        </where>
+    </select>
+    
+    <select id="selectById" parameterType="Long" resultMap="BizconfigResult">
+        <include refid="selectBizconfigVo"/>
+        where bc.id = #{id}
+    </select>
+
+    <select id="selectByKey" parameterType="String" resultType="String">
+        select bc.`value` from sys_bizconfig bc
+        where bc.`key` = #{key}
+    </select>
+        
+    <insert id="insert" parameterType="Bizconfig">
+        insert into sys_bizconfig
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="value != null  and value != ''">`value`,</if>
+            <if test="key != null  and key != ''">`key`,</if>
+            <if test="version != null ">version,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="updateBy != null ">update_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="createBy != null ">create_by,</if>
+            <if test="id != null ">id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="value != null  and value != ''">#{value},</if>
+            <if test="key != null  and key != ''">#{key},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="updateBy != null ">#{updateBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="createBy != null ">#{createBy},</if>
+            <if test="id != null ">#{id},</if>
+         </trim>
+    </insert>
+    
+    <insert id="insertBatch" >
+        insert into sys_bizconfig
+        (remark, `value`, `key`, version, update_time, update_by, create_time, create_by, id  ) values
+		<foreach collection="list" item="item" index="index" separator=",">
+      	(#{item.remark}, #{item.value}, #{item.key}, #{item.version}, #{item.updateTime}, #{item.updateBy}, #{item.createTime}, #{item.createBy}, #{item.id}  )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="Bizconfig">
+        update sys_bizconfig
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="remark != null ">remark = #{remark},</if>
+            <if test="value != null ">`value` = #{value},</if>
+            <if test="key != null ">`key` = #{key},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="updateBy != null ">update_by = #{updateBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="createBy != null ">create_by = #{createBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    
+    <update id="updateBatch" >
+      <foreach collection="list" item="item" index="index" separator=";">
+        update sys_bizconfig
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="item.remark != null ">remark = #{item.remark},</if>
+            <if test="item.value != null ">`value` = #{item.value},</if>
+            <if test="item.key != null ">`key` = #{item.key},</if>
+            <if test="item.version != null ">version = #{item.version},</if>
+            <if test="item.updateTime != null ">update_time = #{item.updateTime},</if>
+            <if test="item.updateBy != null ">update_by = #{item.updateBy},</if>
+            <if test="item.createTime != null ">create_time = #{item.createTime},</if>
+            <if test="item.createBy != null ">create_by = #{item.createBy},</if>
+        </trim>
+        where id = #{item.id}
+      </foreach>
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+      delete from sys_bizconfig
+      where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+      delete from sys_bizconfig
+      where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

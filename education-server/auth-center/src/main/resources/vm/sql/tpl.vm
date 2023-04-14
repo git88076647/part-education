@@ -1,0 +1,4 @@
+#foreach ($bt in $billtpl)
+insert into sys_billtpl_item(id,billtplcode,sortindex,type,label,align,prop,formatter,show_list,show_card) 
+values($bt.id,'$bt.billtplcode',$bt.sortindex,'$bt.type','$bt.label','$bt.align','$bt.prop','$bt.formatter',$bt.showList,$bt.showCard);
+#end

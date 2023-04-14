@@ -1,0 +1,27 @@
+spring:
+  profiles:
+    active: slave0
+  security:
+    basic:
+      enabled: true
+    user:
+      name: admin
+      password: 554BCAF092D8D1ED3936C0CB09E91AF1
+czyl:
+  alert:
+    up:
+      # true 启用上线邮件通知
+      enabled: false
+      html: true
+      subject: "服务上线警告"
+      content: "服务: {appName} 实例:<h1>{instanceId}</h1> 已上线<br/> {now}"
+      to:
+        - imthx@qq.com
+    down:
+      # true 启用下线邮件通知
+      enabled: false
+      html: true
+      subject: "服务下线警告"
+      content: "服务: {appName} 实例:<h1>{instanceId}</h1> 已下线<br/> {now}"
+      to:
+        - imthx@qq.com

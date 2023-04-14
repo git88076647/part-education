@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.system.mapper.SysUserPermissionMapper">
+
+    <resultMap type="com.czyl.project.system.domain.SysUserPermission" id="UserPermissionResult">
+        <result property="dataId" column="data_id"/>
+        <result property="dataNode" column="data_node"/>
+        <result property="dataType" column="data_type"/>
+        <result property="userId" column="user_id"/>
+        <result property="version" column="version"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="id" column="id"/>
+        <result property="createByName" column="createByName"/>
+        <result property="updateByName" column="updateByName"/>
+        <result property="userIdName" column="userIdName"/>
+        <result property="dataIdName" column="dataIdName"/>
+    </resultMap>
+
+    <sql id="selectUserPermissionVo">
+        select uc.nick_name createByName,
+               uu.nick_name updateByName,
+               sr.nick_name userIdName,
+               ko.name dataIdName,
+               p.data_id,
+               p.data_node,
+               p.data_type,
+               p.user_id,
+               p.version,
+               p.update_time,
+               p.update_by,
+               p.create_time,
+               p.create_by,
+               p.id
+        from sys_user_permission p
+                 left join sys_user uc on uc.user_id = p.create_by
+                 left join sys_user uu on uu.user_id = p.update_by
+                 left join sys_user sr on sr.user_id = p.user_id
+                 left join kl_org ko on ko.id = p.data_id
+    </sql>
+
+    <select id="selectList" parameterType="com.czyl.project.system.domain.SysUserPermission" resultMap="UserPermissionResult">
+        <include refid="selectUserPermissionVo"/>
+        <where>
+            <if test="dataId != null  and dataId >0">and p.data_id = #{dataId}</if>
+            <if test="dataNode != null  ">and p.data_node = #{dataNode}</if>
+            <if test="dataType != null  ">and p.data_type = #{dataType}</if>
+            <if test="userId != null  and userId >0">and p.user_id = #{userId}</if>
+            <if test="dataIds != null and dataIds.size > 0">
+                and p.data_id in
+                <foreach item="item" collection="dataIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+             <if test="dataTypes != null and dataTypes.size > 0">
+                and p.data_type in
+                <foreach item="item" collection="dataTypes" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+             <if test="dataNodes != null and dataNodes.size > 0">
+                and p.data_node in
+                <foreach item="item" collection="dataNodes" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="userIds != null and userIds.size > 0">
+                and p.user_id in
+                <foreach item="item" collection="userIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="UserPermissionResult">
+        <include refid="selectUserPermissionVo"/>
+        where p.id = #{id}
+    </select>
+    <select id="checkout" resultMap="UserPermissionResult">
+        <include refid="selectUserPermissionVo"/>
+        <where>
+            <if test="dataId != null and dataId >0">and p.data_id = #{dataId}</if>
+            <if test="dataNode != null  ">and p.data_node = #{dataNode}</if>
+            <if test="dataType != null  ">and p.data_type = #{dataType}</if>
+            <if test="userId != null and userId >0">and p.user_id = #{userId}</if>
+            <if test="id != null">and p.id != #{id}</if>
+        </where>
+
+    </select>
+    <select id="selectByIds" resultMap="UserPermissionResult">
+        <include refid="selectUserPermissionVo"/>
+        where p.id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </select>
+
+    <insert id="insert" parameterType="com.czyl.project.system.domain.SysUserPermission">
+        insert into sys_user_permission
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dataId != null ">data_id,</if>
+            <if test="dataNode != null ">data_node,</if>
+            <if test="dataType != null ">data_type,</if>
+            <if test="userId != null ">user_id,</if>
+            <if test="version != null ">version,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="updateBy != null ">update_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="createBy != null ">create_by,</if>
+            <if test="id != null ">id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dataId != null ">#{dataId},</if>
+            <if test="dataNode != null ">#{dataNode},</if>
+            <if test="dataType != null ">#{dataType},</if>
+            <if test="userId != null ">#{userId},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="updateBy != null ">#{updateBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="createBy != null ">#{createBy},</if>
+            <if test="id != null ">#{id},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertBatch">
+        insert into sys_user_permission
+        (data_id, data_node, data_type, user_id, version, update_time, update_by, create_time, create_by, id ) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.dataId}, #{item.dataNode}, #{item.dataType}, #{item.userId}, #{item.version}, #{item.updateTime},
+            #{item.updateBy}, #{item.createTime}, #{item.createBy}, #{item.id} )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.czyl.project.system.domain.SysUserPermission">
+        update sys_user_permission
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dataId != null ">data_id = #{dataId},</if>
+            <if test="dataNode != null ">data_node = #{dataNode},</if>
+            <if test="dataType != null ">data_type = #{dataType},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="updateBy != null ">update_by = #{updateBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="createBy != null ">create_by = #{createBy},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateBatch">
+        <foreach collection="list" item="item" index="index" separator=";">
+            update sys_user_permission
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="item.dataId != null ">data_id = #{item.dataId},</if>
+                <if test="item.dataNode != null ">data_node = #{item.dataNode},</if>
+                <if test="item.dataType != null ">data_type = #{item.dataType},</if>
+                <if test="item.userId != null ">user_id = #{item.userId},</if>
+                <if test="item.version != null ">version = #{item.version},</if>
+                <if test="item.updateTime != null ">update_time = #{item.updateTime},</if>
+                <if test="item.updateBy != null ">update_by = #{item.updateBy},</if>
+                <if test="item.createTime != null ">create_time = #{item.createTime},</if>
+                <if test="item.createBy != null ">create_by = #{item.createBy},</if>
+            </trim>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+
+    <delete id="deleteById" parameterType="Long">
+        delete
+        from sys_user_permission
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+        delete from sys_user_permission
+        where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

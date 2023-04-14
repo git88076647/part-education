@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.mapper.MaterialMapper">
+
+	<resultMap type="Material" id="MaterialResult">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="version" column="version" />
+	</resultMap>
+
+	<sql id="selectMaterialVo">
+		select t_material.id, t_material.name,t_material.version from t_material
+	</sql>
+
+	<select id="selectList" parameterType="Material"
+		resultMap="MaterialResult">
+		<include refid="selectMaterialVo" />
+		<where>
+			<if test="name != null  and name != ''"> and t_material.name like concat('%', #{name}, '%')</if>
+		</where>
+	</select>
+
+	<select id="selectById" parameterType="Long"
+		resultMap="MaterialResult">
+		<include refid="selectMaterialVo" />
+		where t_material.id = #{id}
+	</select>
+
+	<insert id="insert" parameterType="Material">
+		insert into t_material
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">id,</if>
+			<if test="name != null  and name != ''">name,</if>
+			<if test="version != null ">version,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null ">#{id},</if>
+			<if test="name != null  and name != ''">#{name},</if>
+			<if test="version != null ">#{version},</if>
+		</trim>
+	</insert>
+
+	<insert id="insertBatch" parameterType="java.util.List">
+		insert into t_material(id,name,version)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.id},
+			#{item.name},
+			#{item.version}
+			)
+		</foreach>
+	</insert>
+
+	<update id="update" parameterType="Material">
+		update t_material
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="name != null  and name != ''">name = #{name},</if>
+		</trim>
+		where id = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="Long">
+		delete from t_material
+		where id = #{id}
+	</delete>
+
+	<delete id="deleteByIds" parameterType="String">
+		delete from t_material
+		where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

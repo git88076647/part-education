@@ -1,0 +1,271 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.czyl.platform</groupId>
+	<artifactId>pub-platform</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.13.RELEASE</version>
+		<relativePath />
+	</parent>
+	<modules>
+
+		<!-- 业务网关 -->
+		<module>gateway-center</module>
+		<!-- 内部支撑工具 -->
+		<module>inner-intergration</module>
+		<!-- 任务中心 -->
+		<module>job-center</module>
+		<!-- 监控中心 -->
+		<module>monitor-center</module>
+		<!-- 认证中心 -->
+		<module>auth-center</module>
+		<!-- 认证核心 -->
+		<module>auth-core</module>
+		<!-- 注册中心 -->
+		<module>register-center</module>
+		<!-- 文件中心 -->
+		<module>file-center</module>
+		<!-- 报表服务 -->
+		<module>report-server</module>
+
+		<!-- 示例 -->
+		<module>example</module>
+        <module>education-server</module>
+
+
+    </modules>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<!-- 解决首行报错  Unknow  错误   -->
+		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
+		<nacos.version>2.1.1.RELEASE</nacos.version>
+		<transmittable.version>2.12.0</transmittable.version>
+		<czyl.version>0.0.1-SNAPSHOT</czyl.version>
+		<mybatis.spring.boot.starter.version>2.2.0</mybatis.spring.boot.starter.version>
+		<pagehelper.spring.boot.starter.version>1.3.0</pagehelper.spring.boot.starter.version>
+		<fastjson.version>1.2.83</fastjson.version>
+		<druid.version>1.2.6</druid.version>
+		<commons-collections.version>3.2.2</commons-collections.version>
+		<commons-beanutils.version>1.9.4</commons-beanutils.version>
+		<p6spy.version>3.9.1</p6spy.version>
+		<jsqlparser.version>4.0</jsqlparser.version>
+		<commons.io.version>2.5</commons.io.version>
+		<commons.fileupload.version>1.4</commons.fileupload.version>
+		<bitwalker.version>1.21</bitwalker.version>
+		<jwt.version>0.9.1</jwt.version>
+		<swagger.version>2.9.2</swagger.version>
+		<poi.version>4.1.2</poi.version>
+		<oshi.version>5.3.6</oshi.version>
+		<velocity.version>1.7</velocity.version>
+		<!-- <slf4j.version>1.7.29</slf4j.version> -->
+		<zuul-ratelimit.version>2.2.7.RELEASE</zuul-ratelimit.version>
+		<spring-cloud.version>Hoxton.SR9</spring-cloud.version>
+		<awss3>2.0.0-preview-12</awss3>
+		<aliyun-sdk-oss>3.4.2</aliyun-sdk-oss>
+		<qiniu-java-sdk>7.2.18</qiniu-java-sdk>
+		<fastdfs-client.version>1.26.5</fastdfs-client.version>
+		<spring-mock.version>2.0.8</spring-mock.version>
+		<skywalking.version>6.1.0</skywalking.version>
+		<hutool.version>5.3.1</hutool.version>
+		<es.version>6.3.2</es.version>
+		<shardingsphere.version>4.1.0</shardingsphere.version>
+		<justauth.version>1.15.8</justauth.version>
+		<easyexcel.version>2.2.6</easyexcel.version>
+		<!-- <spring-kafka.version>2.4.7.RELEASE</spring-kafka.version> -->
+		<!-- <kafka.version>2.4.1</kafka.version> -->
+
+	</properties>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<!--Spring框架基本的核心工具-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+		</dependency>
+
+		<!-- swagger -->
+		<!-- <dependency>
+			<groupId>com.didispace</groupId>
+			<artifactId>swagger-butler-core</artifactId>
+			<version>2.0.0</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>transmittable-thread-local</artifactId>
+				<version>${transmittable.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<artifactId>commons-beanutils</artifactId>
+				<groupId>commons-beanutils</groupId>
+				<version>${commons-beanutils.version}</version>
+			</dependency>
+			<dependency>
+				<artifactId>commons-collections</artifactId>
+				<groupId>commons-collections</groupId>
+				<version>${commons-collections.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cn.hutool</groupId>
+				<artifactId>hutool-all</artifactId>
+				<version>${hutool.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>p6spy</groupId>
+				<artifactId>p6spy</artifactId>
+				<version>${p6spy.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.github.jsqlparser</groupId>
+				<artifactId>jsqlparser</artifactId>
+				<version>${jsqlparser.version}</version>
+			</dependency>
+
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<target>${java.version}</target>
+						<source>${java.version}</source>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>3.2.0</version>
+					<executions>
+						<execution>
+							<id>attach-sources</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>jar-no-fork</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*.setting</include>
+					<include>**/*.properties</include>
+					<include>**/*.yml</include>
+					<include>**/*.xml</include>
+					<include>**/*.tld</include>
+					<include>**/*.p12</include>
+					<include>**/*.conf</include>
+					<include>**/*.txt</include>
+					<include>**/*.wsdl</include>
+					<include>**/*.xsd</include>
+					<include>**/*.ftl</include>
+					<include>**/*.lua</include>
+					<include>**/*.vm</include>
+					<include>processes/*</include>
+					<include>**/spring.factories</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+					<include>**/*.tld</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/view</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+
+			<resource>
+				<directory>src/main/proto</directory>
+				<includes>
+					<include>**/*.proto</include>
+				</includes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+		<!--单元测试时引用src/main/resources下的资源文件-->
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+			<testResource>
+				<directory>src/main/resources</directory>
+			</testResource>
+		</testResources>
+	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>rdc-releases</id>
+			<url>https://packages.aliyun.com/maven/repository/24409-release-87w1FL/</url>
+		</repository>
+		<snapshotRepository>
+			<id>rdc-snapshots</id>
+			<url>https://packages.aliyun.com/maven/repository/24409-snapshot-AA0Hx0/</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>

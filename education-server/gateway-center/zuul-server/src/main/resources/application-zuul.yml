@@ -1,0 +1,133 @@
+zuul:
+  ribbon-isolation-strategy: thread       # 提高吞吐量
+  host:
+    max-per-route-connections: 60000      # 适用于ApacheHttpClient，如果是okhttp无效。每个服务的http客户端连接池最大连接，默认是200
+    max-total-connections: 60000          # 适用于ApacheHttpClient，如果是okhttp无效。每个route可用的最大连接数，默认值是20
+  ribbon:
+    eager-load:
+      enabled: true
+  threadPool:
+    useSeparateThreadPools: true
+    threadPoolKeyPrefix: zuulgw
+  #org.springframework.cloud.netflix.zuul.filters.pre.DebugFilter
+  include:
+    debug:
+      header: false
+  debug:
+    request: false
+    parameter: debugRequest
+  retryable: false    #关闭重试
+  semaphore:
+    max-semaphores: 15000  #信号量
+  sensitive-headers: Cookie,Set-Cookie,Authorization #/oauth/token需要请求头处理
+  #此处添加ignored-services的意义是忽略通过服务名可以访问微服务(添加完成之后不能通过服务名访问微服务)
+  ignored-services: '*'
+  ignored-headers: Access-Control-Allow-Credentials,Access-Control-Allow-Origin,Access-Control-Allow-Methods
+  add-host-header: true
+  #  add-proxy-headers: true  #授权码跳转问题
+  routes:
+    #    演示配置
+    #    baidu:
+    #      path: /test163/**
+    #      url: http://59.110.164.254:9999
+    auth-api:
+      path: /auth-api/**
+      service-id: auth-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    #http://blog.didispace.com/spring-cloud-zuul-cookie-redirect/ zuul授权码跳转问题
+    tool:
+      path: /tool/**
+      service-id: auth-server
+      strip-prefix: false
+      custom-sensitive-headers: true
+    log-api:
+      path: /log-api/**
+      service-id: log-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    monitor-api:
+      path: /monitor-api/**
+      service-id: monitor-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    file-api:
+      path: /file-api/**
+      service-id: file-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    job-api:
+      path: /job-api/**
+      service-id: job-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    report-api:
+      path: /report-api/**
+      service-id: report-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    emc-api:
+      path: /emc-api/**
+      service-id: emc-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    cm-api:
+      path: /cm-api/**
+      service-id: cm-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    wechat-api:
+      path: /wechat-api/**
+      service-id: wechat-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    hnym-api:
+      path: /hnym-api/**
+      service-id: hnym-server
+      strip-prefix: true
+      custom-sensitive-headers: true
+    example1-api:
+      path: /example1-api/**
+      service-id: sharding-example
+      strip-prefix: true
+      custom-sensitive-headers: true
+    wsexample-api:
+      path: /wsexample-api/**
+      service-id: websocket-example
+      strip-prefix: true
+      custom-sensitive-headers: true
+  ssl-hostname-validation-enabled: false
+  #忽略的url
+  ignored-patterns:
+    #避免前端插入日志数据
+    - /log-api/log/logininfor
+    - /log-api/log/operlog
+    #避免暴露的信息
+    - /**/hystrix/**
+    - /**/actuator/**
+    - /**/czyldatasourceboard/**
+
+  ratelimit:
+    enabled: false  #默认不限流
+    repository: REDIS
+    policy-list:
+      auth-server:
+        - limit: 10
+          refresh-interval: 60
+          type:
+            - origin
+      log-server:
+        - limit: 10
+          refresh-interval: 60
+          type:
+            - origin
+
+
+
+logging:
+  level:
+    com.czyl: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+

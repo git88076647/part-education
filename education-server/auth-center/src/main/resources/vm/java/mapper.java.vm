@@ -1,0 +1,76 @@
+package ${packageName}.mapper;
+
+import ${packageName}.domain.${ClassName};
+import java.util.List;
+
+/**
+ * ${functionName}Mapper接口
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper{
+    /**
+     * 查询${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return ${functionName}
+     */
+    public ${ClassName} selectById(${pkColumn.javaType} ${pkColumn.javaField});
+
+    /**
+     * 查询${functionName}列表
+     * 
+     * @param entity ${functionName}
+     * @return ${functionName}集合
+     */
+    public List<${ClassName}> selectList(${ClassName} entity);
+
+    /**
+     * 新增${functionName}
+     * 
+     * @param entity ${functionName}
+     * @return 结果
+     */
+    public int insert(${ClassName} entity);
+    
+    /**
+     * 新增${functionName}
+     * 
+     * @param list ${functionName}
+     * @return 结果
+     */
+    public int insertBatch(List<${ClassName}> list);
+
+    /**
+     * 修改${functionName}
+     * 
+     * @param entity ${functionName}
+     * @return 结果
+     */
+    public int update(${ClassName} entity);
+    
+    /**
+     * 修改${functionName}
+     * 
+     * @param list ${functionName}
+     * @return 结果
+     */
+    public int updateBatch(List<${ClassName}> list);
+
+    /**
+     * 删除${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return 结果
+     */
+    public int deleteById(${pkColumn.javaType} ${pkColumn.javaField});
+
+    /**
+     * 批量删除${functionName}
+     * 
+     * @param ${pkColumn.javaField}s 需要删除的数据ID
+     * @return 结果
+     */
+    public int deleteByIds(${pkColumn.javaType}[] ${pkColumn.javaField}s);
+}

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.framework.ref.mapper.SysRefdocMapper">
+    
+    <resultMap type="SysRefdoc" id="SysRefdocResult">
+        <result property="msg"    column="msg"    />
+        <result property="refField"    column="ref_field"    />
+        <result property="refTable"    column="ref_table"    />
+        <result property="srcField"    column="src_field"    />
+        <result property="srcTable"    column="src_table"    />
+        <result property="id"    column="id"    />
+    </resultMap>
+
+    <sql id="selectSysRefdocVo">
+        select sys_refdoc.* from sys_refdoc
+    </sql>
+
+
+
+    <select id="checkDataRef" parameterType="SysRefdoc" resultType="Map">
+        select id from ${refTable} where ${refField} = #{srcValue} limit 1
+    </select>
+    <select id="selectList" parameterType="SysRefdoc" resultMap="SysRefdocResult">
+        <include refid="selectSysRefdocVo"/>
+        <where>
+            <if test="msg != null  and msg != ''"> and sys_refdoc.msg = #{msg}</if>
+            <if test="refField != null  and refField != ''"> and sys_refdoc.ref_field = #{refField}</if>
+            <if test="refTable != null  and refTable != ''"> and sys_refdoc.ref_table = #{refTable}</if>
+            <if test="srcField != null  and srcField != ''"> and sys_refdoc.src_field = #{srcField}</if>
+            <if test="srcTable != null  and srcTable != ''"> and sys_refdoc.src_table = #{srcTable}</if>
+            <if test="id != null "> and sys_refdoc.id = #{id}</if>
+        </where>
+    </select>
+    
+    <select id="selectById" parameterType="Integer" resultMap="SysRefdocResult">
+        <include refid="selectSysRefdocVo"/>
+        where sys_refdoc.id = #{id}
+    </select>
+        
+    <insert id="insert" parameterType="SysRefdoc" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_refdoc
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="msg != null  and msg != ''">msg,</if>
+            <if test="refField != null  and refField != ''">ref_field,</if>
+            <if test="refTable != null  and refTable != ''">ref_table,</if>
+            <if test="srcField != null  and srcField != ''">src_field,</if>
+            <if test="srcTable != null  and srcTable != ''">src_table,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="msg != null  and msg != ''">#{msg},</if>
+            <if test="refField != null  and refField != ''">#{refField},</if>
+            <if test="refTable != null  and refTable != ''">#{refTable},</if>
+            <if test="srcField != null  and srcField != ''">#{srcField},</if>
+            <if test="srcTable != null  and srcTable != ''">#{srcTable},</if>
+         </trim>
+    </insert>
+    
+    <insert id="insertBatch"  useGeneratedKeys="true" keyProperty="id">
+        insert into sys_refdoc
+        (msg, ref_field, ref_table, src_field, src_table, id  ) values
+		<foreach collection="list" item="item" index="index" separator=",">
+      	(#{item.msg}, #{item.refField}, #{item.refTable}, #{item.srcField}, #{item.srcTable}, #{item.id}  )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="SysRefdoc">
+        update sys_refdoc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="msg != null ">msg = #{msg},</if>
+            <if test="refField != null ">ref_field = #{refField},</if>
+            <if test="refTable != null ">ref_table = #{refTable},</if>
+            <if test="srcField != null ">src_field = #{srcField},</if>
+            <if test="srcTable != null ">src_table = #{srcTable},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    
+    <update id="updateBatch" >
+      <foreach collection="list" item="item" index="index" separator=";">
+        update sys_refdoc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="item.msg != null ">msg = #{item.msg},</if>
+            <if test="item.refField != null ">ref_field = #{item.refField},</if>
+            <if test="item.refTable != null ">ref_table = #{item.refTable},</if>
+            <if test="item.srcField != null ">src_field = #{item.srcField},</if>
+            <if test="item.srcTable != null ">src_table = #{item.srcTable},</if>
+        </trim>
+        where id = #{item.id}
+      </foreach>
+    </update>
+
+    <delete id="deleteById" parameterType="Integer">
+      delete from sys_refdoc 
+      where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+      delete from sys_refdoc 
+      where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.report.mapper.RepSemparmarMapper">
+
+    <resultMap type="RepSemparmar" id="RepSemparmarResult">
+        <result property="pkSemparmar" column="pk_semparmar"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="pkSemantic" column="pk_semantic"/>
+        <result property="valuestr" column="valuestr"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="description" column="description"/>
+        <result property="dr" column="dr"/>
+        <result property="statue" column="statue"/>
+        <result property="orgId" column="org_id"/>
+        <result property="javatype" column="javatype"/>
+    </resultMap>
+
+    <sql id="selectRepSemparmarVo">
+        select pk_semparmar, code, name, pk_semantic, valuestr, create_by, create_time, update_by, update_time, version, description, dr, statue, org_id, javatype from rep_semparmar
+    </sql>
+
+    <select id="selectRepSemparmarList" parameterType="RepSemparmar" resultMap="RepSemparmarResult">
+        <include refid="selectRepSemparmarVo"/>
+        <where>
+            <if test="code != null  and code != ''">and code = #{code}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="pkSemantic != null  and pkSemantic != ''">and pk_semantic = #{pkSemantic}</if>
+            <if test="valuestr != null  and valuestr != ''">and valuestr = #{valuestr}</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+            <if test="statue != null ">and statue = #{statue}</if>
+            <if test="orgId != null ">and org_id = #{orgId}</if>
+            <if test="javatype != null  and javatype != ''">and javatype = #{javatype}</if>
+        </where>
+    </select>
+
+    <select id="selectRepSemparmarById" parameterType="Long" resultMap="RepSemparmarResult">
+        <include refid="selectRepSemparmarVo"/>
+        where pk_semparmar = #{pkSemparmar}
+    </select>
+
+    <select id="selectRepSemparmarBySemanticId" parameterType="Long"
+            resultType="com.czyl.project.report.domain.RepSemparmar">
+        <include refid="selectRepSemparmarVo"/>
+            where pk_semantic = #{pk_semantic}
+    </select>
+
+    <insert id="insertRepSemparmar" parameterType="RepSemparmar">
+        insert into rep_semparmar
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkSemparmar != null ">pk_semparmar,</if>
+            <if test="code != null  and code != ''">code,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="pkSemantic != null  and pkSemantic != ''">pk_semantic,</if>
+            <if test="valuestr != null  and valuestr != ''">valuestr,</if>
+            <if test="createBy != null ">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null ">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="version != null ">version,</if>
+            <if test="description != null  and description != ''">description,</if>
+            <if test="dr != null ">dr,</if>
+            <if test="statue != null ">statue,</if>
+            <if test="orgId != null ">org_id,</if>
+            <if test="javatype != null  and javatype != ''">javatype,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkSemparmar != null ">#{pkSemparmar},</if>
+            <if test="code != null  and code != ''">#{code},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="pkSemantic != null  and pkSemantic != ''">#{pkSemantic},</if>
+            <if test="valuestr != null  and valuestr != ''">#{valuestr},</if>
+            <if test="createBy != null ">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null ">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="description != null  and description != ''">#{description},</if>
+            <if test="dr != null ">#{dr},</if>
+            <if test="statue != null ">#{statue},</if>
+            <if test="orgId != null ">#{orgId},</if>
+            <if test="javatype != null  and javatype != ''">#{javatype},</if>
+        </trim>
+    </insert>
+
+    <update id="updateRepSemparmar" parameterType="RepSemparmar">
+        update rep_semparmar
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null  and code != ''">code = #{code},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="pkSemantic != null  and pkSemantic != ''">pk_semantic = #{pkSemantic},</if>
+            <if test="valuestr != null  and valuestr != ''">valuestr = #{valuestr},</if>
+            <if test="createBy != null ">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null ">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="description != null  and description != ''">description = #{description},</if>
+            <if test="dr != null ">dr = #{dr},</if>
+            <if test="statue != null ">statue = #{statue},</if>
+            <if test="orgId != null ">org_id = #{orgId},</if>
+            <if test="javatype != null  and javatype != ''">javatype = #{javatype},</if>
+        </trim>
+        where pk_semparmar = #{pkSemparmar}
+    </update>
+
+    <delete id="deleteRepSemparmarById" parameterType="Long">
+        delete from rep_semparmar where pk_semparmar = #{pkSemparmar}
+    </delete>
+
+    <delete id="deleteRepSemparmarByIds" parameterType="String">
+        delete from rep_semparmar where pk_semparmar in
+        <foreach item="pkSemparmar" collection="array" open="(" separator="," close=")">
+            #{pkSemparmar}
+        </foreach>
+    </delete>
+
+</mapper>

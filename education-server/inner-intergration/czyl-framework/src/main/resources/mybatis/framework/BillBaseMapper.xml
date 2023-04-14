@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.framework.table.mapper.BillBaseMapper">
+
+	<select id="getVersion" resultType="long" parameterType="map" >
+		SELECT ${versionField} from ${tableName} where ${idField} = #{id}
+	</select>
+	
+	<select id="getList" resultType="HashMap" parameterType="map" >
+		${sql}
+	</select>
+	
+	<select id="insert" resultType="Integer" parameterType="map" >
+		${sql}
+	</select>
+	
+	<select id="update" resultType="Integer" parameterType="map" >
+		${sql}
+	</select>
+	
+</mapper>

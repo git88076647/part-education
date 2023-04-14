@@ -1,0 +1,25 @@
+{
+  "properties": [
+    {
+      "name": "management.endpoint.reload",
+      "type": "com.czyl.framework.endpoint.ReloadEndpoint",
+      "description": "重启端点",
+      "sourceType": "com.czyl.framework.endpoint.ReloadEndpoint"
+    },
+    {
+      "name": "management.endpoint.reload.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用重启端点，默认false",
+      "sourceType": "com.czyl.framework.endpoint.ReloadEndpoint",
+      "defaultValue": false
+    },
+    {
+      "name": "com.czyl.framework.config.properties.DynamicDataSourceProperties.primary",
+      "type": "java.lang.String",
+      "description": "默认数据源",
+      "sourceType": "com.czyl.framework.config.properties.DynamicDataSourceProperties.primary",
+      "defaultValue": "master"
+    }
+  ],
+  "hints": []
+}

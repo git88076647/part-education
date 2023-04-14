@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<springProperty name="APP_NAME" scope="context"
+		source="spring.application.name" />
+	<springProperty name="LOG_FILE" scope="context"
+		source="logging.file" defaultValue="../logs/${APP_NAME}" />
+	<springProperty name="LOG_POINT_FILE" scope="context"
+		source="logging.file" defaultValue="../logs/point" />
+	<springProperty name="LOG_MAXFILESIZE" scope="context"
+		source="logback.filesize" defaultValue="50MB" />
+	<springProperty name="LOG_FILEMAXDAY" scope="context"
+		source="logback.filemaxday" defaultValue="7" />
+	<springProperty name="ServerIP" scope="context"
+		source="spring.cloud.client.ip-address" defaultValue="0.0.0.0" />
+	<springProperty name="ServerPort" scope="context"
+		source="server.port" defaultValue="0000" />
+
+	<!-- 彩色日志 -->
+	<conversionRule conversionWord="clr"
+		converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+	<conversionRule conversionWord="wex"
+		converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+	<conversionRule conversionWord="wEx"
+		converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+	<!-- 彩色日志格式 -->
+	<property name="CONSOLE_LOG_PATTERN"
+		value="[${APP_NAME}:${ServerIP}:${ServerPort}] [%clr(%tid){yellow},%clr(trace:%X{X-B3-TraceId:-}){yellow},%clr(span:%X{X-B3-SpanId:-}){yellow},user:%X{X-B3-UserId:-},biz:%X{X-B3-Biz:-}] %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%level){blue} %clr(${PID}){magenta} %clr([%thread]){orange} %clr(%logger){cyan} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+	<!-- 无色日志格式 -->
+	<property name="CONSOLE_LOG_PATTERN_NO_COLOR"
+		value='[level:%level]|[service:${APP_NAME}:${ServerIP}:${ServerPort}]|[%tid]|[trace:%X{X-B3-TraceId:-}]|[span:%X{X-B3-SpanId:-}]|[parent:%X{X-B3-ParentSpanId:-}]|[user:%X{X-B3-UserId:-}]|[biz:%X{X-B3-Biz:-}]|[ts:%d{yyyy-MM-dd HH:mm:ss.SSS}]|[pid=${PID:-}]|[thread:%thread]|[cls:%logger{40}]|[message:%message]%n' />
+
+	<!-- 控制台日志 -->
+	<appender name="console"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<withJansi>true</withJansi>
+		<encoder
+			class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout
+				class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+				<pattern>${CONSOLE_LOG_PATTERN}</pattern>
+			</layout>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<!-- 系统日志输出 -->
+	<appender name="file_info"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_FILE}/${APP_NAME}-${ServerPort}-info.log</file>
+		<!-- 循环政策：基于时间创建日志文件 -->
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 日志文件名格式 -->
+			<fileNamePattern>${LOG_FILE}/${APP_NAME}-${ServerPort}-info.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<!-- 日志最大的历史 60天 -->
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder
+			class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout
+				class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+				<pattern>${CONSOLE_LOG_PATTERN_NO_COLOR}</pattern>
+			</layout>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<!-- 过滤的级别 -->
+			<level>INFO</level>
+			<!-- 匹配时的操作：接收（记录） -->
+			<onMatch>ACCEPT</onMatch>
+			<!-- 不匹配时的操作：拒绝（不记录） -->
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<appender name="file_error"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_FILE}/${APP_NAME}-${ServerPort}-error.log</file>
+		<!-- 循环政策：基于时间创建日志文件 -->
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 日志文件名格式 -->
+			<fileNamePattern>${LOG_FILE}/${APP_NAME}-${ServerPort}-error.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<!-- 日志最大的历史 60天 -->
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder
+			class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout
+				class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+				<pattern>${CONSOLE_LOG_PATTERN_NO_COLOR}</pattern>
+			</layout>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<!-- 过滤的级别 -->
+			<level>ERROR</level>
+			<!-- 匹配时的操作：接收（记录） -->
+			<onMatch>ACCEPT</onMatch>
+			<!-- 不匹配时的操作：拒绝（不记录） -->
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 平台访问日志输出 -->
+	<appender name="platform"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_FILE}/platform-${ServerPort}.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 按天回滚 daily -->
+			<fileNamePattern>${LOG_FILE}/platform-${ServerPort}.%d{yyyy-MM-dd}.log
+			</fileNamePattern>
+			<!-- 日志最大的历史 60天 -->
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder
+			class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout
+				class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+				<pattern>${CONSOLE_LOG_PATTERN_NO_COLOR}</pattern>
+			</layout>
+		</encoder>
+	</appender>
+
+	<!-- 系统模块日志级别控制 -->
+	<logger name="com.czyl" level="info" />
+	<!-- Spring日志级别控制 -->
+	<logger name="org.springframework" level="warn" />
+
+	<logger
+		name="com.netflix.discovery.shared.resolver.aws.ConfigClusterResolver"
+		level="warn" />
+	<root level="info">
+		<appender-ref ref="console" />
+	</root>
+
+	<!--系统操作日志 -->
+	<root level="info">
+		<appender-ref ref="file_info" />
+		<appender-ref ref="file_error" />
+	</root>
+
+	<!--系统平台日志 -->
+	<logger name="platform" level="info">
+		<appender-ref ref="platform" />
+	</logger>
+
+</configuration> 

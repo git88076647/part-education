@@ -1,0 +1,80 @@
+dataSources:
+  ds0: !!com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://nas.tanghx.com:133061/czylsharding?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: czyl2010
+    minimumIdle: 5
+    maximumPoolSize: 20
+  ds0_slave0: !!com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://nas.tanghx.com:133061/czylsharding?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: czyl2010
+  ds0_slave1: !!com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://nas.tanghx.com:133061/czylsharding?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: czyl2010
+  ds1: !!com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://nas.tanghx.com:133061/czylsharding2?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: czyl2010
+    minimumIdle: 5
+    maximumPoolSize: 20
+  ds1_slave0: !!com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://nas.tanghx.com:133061/czylsharding2?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password: czyl2010
+shardingRule: 
+  tables:
+    t_material:
+      actualDataNodes: ms_ds0.t_material
+    t_order: 
+      actualDataNodes: ms_ds0.t_order_2020,ms_ds0.t_order_2021
+      tableStrategy: 
+        standard:
+          shardingColumn: billdate 
+          preciseAlgorithmClassName: com.czyl.framework.sharding.DateYearPreciseShardingAlgorithm
+          rangeAlgorithmClassName: com.czyl.framework.sharding.DateYearRangeShardingAlgorithm
+    t_orderdetail: 
+      actualDataNodes: ms_ds0.t_orderdetail_2020,ms_ds0.t_orderdetail_2021
+      tableStrategy: 
+        standard: 
+          shardingColumn: billdate 
+          preciseAlgorithmClassName: com.czyl.framework.sharding.DateYearPreciseShardingAlgorithm
+          rangeAlgorithmClassName: com.czyl.framework.sharding.DateYearRangeShardingAlgorithm
+    t_msg: 
+      actualDataNodes: ms_ds${0..1}.t_msg_2020,ms_ds${0..1}.t_msg_2021
+      databaseStrategy:
+        inline:
+          shardingColumn: vtype
+          algorithmExpression: ms_ds${vtype % 2}
+      tableStrategy: 
+        standard:
+          shardingColumn: senddate 
+          preciseAlgorithmClassName: com.czyl.framework.sharding.DateYearPreciseShardingAlgorithm
+          rangeAlgorithmClassName: com.czyl.framework.sharding.DateYearRangeShardingAlgorithm
+  bindingTables:
+    - t_order,t_orderdetail
+  broadcastTables: 
+    - t_material 
+  defaultDataSourceName: ds0
+  defaultTableStrategy:
+    none:
+  masterSlaveRules:
+    ms_ds0:
+      masterDataSourceName: ds0
+      slaveDataSourceNames:
+        - ds0_slave0
+        - ds0_slave1
+      loadBalanceAlgorithmType: ROUND_ROBIN
+    ms_ds1:
+      masterDataSourceName: ds1
+      slaveDataSourceNames:
+        - ds1_slave0
+      loadBalanceAlgorithmType: ROUND_ROBIN
+props:
+  sql.show: true

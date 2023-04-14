@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.system.mapper.ResourceMapper">
+    <resultMap type="ResourceEntity" id="ResourceEntity">
+        <id property="id" column="id"/>
+        <result property="resourceCode" column="resource_code"/>
+        <result property="resourceName" column="resource_name"/>
+        <result property="tableName" column="table_name"/>
+        <result property="virtualResource" column="virtual_resource"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+    <select id="getList" resultType="java.util.Map">
+
+        SELECT t2.id,
+        t1.resource_code as resourceCode,
+        t1.table_name as tableName,
+        t2.name as resourceName,
+        t2.column_name as columnName,
+        t2.scope_code as scopeCode,
+        t1.virtual_resource as virtualResource
+        FROM sys_resource t1
+        inner JOIN sys_scope_resource t2 ON t1.resource_code = t2.resource_code
+        where 1=1
+        <if test="scopeCode !=null and scopeCode.length() > 0">
+            and t2.scope_code like #{scopeCode}
+        </if>
+        <if test="resourceCode !=null and resourceCode.length() > 0">
+            and t1.resource_code like #{resourceCode}
+        </if>
+        <if test="resourceName !=null and resourceName.length() > 0">
+            and t2.name like #{resourceName}
+        </if>
+        ORDER BY t2.scope_code,t1.resource_code DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+
+        select count(*) from sys_resource
+        <where>
+            1=1
+            <if test="id !=null">
+                and id != #{id}
+            </if>
+            <if test="resourceCode !=null  and resourceCode.trim().length() > 0">
+                and resource_code=#{resourceCode}
+            </if>
+        </where>
+
+    </select>
+
+    <insert id="insert" parameterType="com.czyl.project.system.domain.ResourceEntity">
+        insert into sys_resource (
+        <if test="id != null ">id,</if>
+        <if test="resourceCode != null and resourceCode != '' ">resource_code,</if>
+        <if test="tableName != null and tableName != '' ">table_name,</if>
+        <if test="resourceName != null and resourceName != '' ">resource_name,</if>
+        <if test="virtualResource != null  ">virtual_resource,</if>
+        <if test="createBy != null ">create_by,</if>
+        <if test="createTime != null ">create_time</if>
+        )values(
+        <if test="id != null ">#{id},</if>
+        <if test="resourceCode != null and resourceCode != ''">#{resourceCode},</if>
+        <if test="tableName != null and tableName != ''">#{tableName},</if>
+        <if test="resourceName != null and resourceName != ''">#{resourceName},</if>
+        <if test="virtualResource !=null ">#{virtualResource},</if>
+        <if test="createBy != null ">#{createBy},</if>
+        <if test="createTime != null ">#{createTime}</if>
+        )
+    </insert>
+    <update id="updateById">
+        update sys_resource
+        <set>
+            <if test="resourceCode != null and resourceCode != '' ">resource_code=#{resourceCode},</if>
+            <if test="tableName != null and tableName != '' ">table_name=#{tableName},</if>
+            <if test="resourceName != null and resourceName != '' ">resource_name=#{resourceName},</if>
+            <if test="virtualResource != null  ">virtual_resource=#{virtualResource},</if>
+            <if test="createBy != null ">create_by=#{createBy},</if>
+            <if test="createTime != null ">create_time=#{createTime}</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="getOne" resultMap="ResourceEntity">
+        select * from sys_resource
+        <where>
+            1=1
+            <if test="id != null ">and id=#{id}</if>
+            <if test="resourceCode != null and resourceCode != ''">and resource_code=#{resourceCode}</if>
+            <if test="tableName != null and tableName != ''">and table_name=#{tableName}</if>
+            <if test="resourceName != null and resourceName != ''">and resource_name =#{resourceName}</if>
+            <if test="virtualResource !=null ">and virtual_resource=#{virtualResource},</if>
+            <if test="createBy != null ">and create_by=#{createBy},</if>
+            <if test="createTime != null ">and create_time=#{createTime}</if>
+        </where>
+    </select>
+</mapper>

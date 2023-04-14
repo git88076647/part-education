@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.system.mapper.SysBilltplItemMapper">
+    
+    <resultMap type="SysBilltplItem" id="SysBilltplItemResult">
+        <result property="sortindex"    column="sortIndex"    />
+        <result property="refjson"    column="refjson"    />
+        <result property="virtual"    column="virtual"    />
+        <result property="export"    column="export"    />
+        <result property="defaultQuery"    column="default_query"    />
+        <result property="query"    column="query"    />
+        <result property="rules"    column="rules"    />
+        <result property="notNull"    column="not_null"    />
+        <result property="showCard"    column="show_card"    />
+        <result property="showList"    column="show_list"    />
+        <result property="tpl"    column="tpl"    />
+        <result property="formatter"    column="formatter"    />
+        <result property="tooltip"    column="tooltip"    />
+        <result property="maxWidth"    column="max_width"    />
+        <result property="minWidth"    column="min_width"    />
+        <result property="width"    column="width"    />
+        <result property="fixed"    column="fixed"    />
+        <result property="prop"    column="prop"    />
+        <result property="align"    column="align"    />
+        <result property="label"    column="label"    />
+        <result property="type"    column="type"    />
+        <result property="billtplcode"    column="billtplcode"    />
+        <result property="version"    column="version"    />
+        <result property="id"    column="id"    />
+        <result property="createByName"    column="createByName"    />
+        <result property="updateByName"    column="updateByName"    />
+    </resultMap>
+
+    <sql id="selectSysBilltplItemVoSelf">
+        select b.* from sys_billtpl_item b
+    </sql>
+    <sql id="selectSysBilltplItemVo">
+        select uc.nick_name createByName, uu.nick_name updateByName,b.* from sys_billtpl_item b
+        left join sys_user uc on uc.user_id=b.create_by
+        left join sys_user uu on uu.user_id=b.update_by
+    </sql>
+
+    <select id="selectList" parameterType="SysBilltplItem" resultMap="SysBilltplItemResult">
+        <include refid="selectSysBilltplItemVo"/>
+        <where>
+            <if test="prop != null  and prop != ''"> and b.prop like concat('%', #{prop}, '%')</if>
+            <if test="label != null  and label != ''"> and b.label like concat('%', #{label}, '%')</if>
+            <if test="billtplcode != null  and billtplcode != ''"> and b.billtplcode = #{billtplcode}</if>
+            <if test="rules != null  and rules != ''"> and b.rules = #{rules}</if>
+            <if test="id != null "> and b.id = #{id}</if>
+            <if test="showList != null "> and b.show_list = #{showList}</if>
+            <if test="showCard != null "> and b.show_card = #{showCard}</if>
+            <if test="notNull != null "> and b.not_null = #{notNull}</if>
+            <if test="query != null "> and b.query = #{query}</if>
+            <if test="export != null "> and b.export = #{export}</if>
+            <if test="defaultQuery != null "> and b.default_query = #{defaultQuery}</if>
+        </where>
+        order by b.sortindex
+    </select>
+
+    <select id="checkUniqueProp" parameterType="SysBilltplItem" resultMap="SysBilltplItemResult">
+        select b.* from sys_billtpl_item b
+        <where>
+            <if test="billtplcode != null  and billtplcode != ''"> and b.billtplcode = #{billtplcode}</if>
+            <if test="prop != null  and prop != ''"> and b.prop = #{prop}</if>
+            <if test="id != null" > and b.id != #{id}</if>
+        </where>
+        limit 1
+    </select>
+
+    <select id="checkUniqueLabel" parameterType="SysBilltplItem" resultMap="SysBilltplItemResult">
+        select b.* from sys_billtpl_item b
+        <where>
+            <if test="billtplcode != null  and billtplcode != ''"> and b.billtplcode = #{billtplcode}</if>
+            <if test="label != null  and label != ''"> and b.label = #{label}</if>
+            <if test="virtual != null  "> and b.`virtual` = #{virtual}</if>
+            <if test="virtual == null  "> and b.`virtual` = 0</if>
+            <if test="id != null" > and b.id != #{id}</if>
+        </where>
+        limit 1
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="SysBilltplItemResult">
+        <include refid="selectSysBilltplItemVoSelf"/>
+        where b.id = #{id}
+    </select>
+    
+    <select id="selectByBillTplCode" parameterType="String" resultMap="SysBilltplItemResult">
+        <include refid="selectSysBilltplItemVoSelf"/>
+        where b.billtplcode = #{billtplcode}
+        order by sortindex
+    </select>
+        
+    <insert id="insert" parameterType="SysBilltplItem">
+        insert into sys_billtpl_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sortindex != null ">sortIndex,</if>
+            <if test="showCard != null ">show_card,</if>
+            <if test="showList != null ">show_list,</if>
+            <if test="notNull != null ">not_null,</if>
+            <if test="virtual != null ">`virtual`,</if>
+            <if test="refjson != null ">refjson,</if>
+            <if test="tpl != null  and tpl != ''">tpl,</if>
+            <if test="formatter != null  and formatter != ''">formatter,</if>
+            <if test="tooltip != null  and tooltip != ''">tooltip,</if>
+            <if test="maxWidth != null  and maxWidth != ''">max_width,</if>
+            <if test="minWidth != null  and minWidth != ''">min_width,</if>
+            <if test="width != null  and width != ''">width,</if>
+            <if test="fixed != null  and fixed != ''">fixed,</if>
+            <if test="prop != null  and prop != ''">prop,</if>
+            <if test="align != null  and align != ''">align,</if>
+            <if test="label != null  and label != ''">label,</if>
+            <if test="type != null  and type != ''">type,</if>
+            <if test="billtplcode != null  and billtplcode != ''">billtplcode,</if>
+            <if test="rules != null  and rules != ''">rules,</if>
+            <if test="query != null  ">query,</if>
+            <if test="defaultQuery != null  ">default_query,</if>
+            <if test="export != null  ">export,</if>
+            <if test="id != null ">id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sortindex != null ">#{sortindex},</if>
+            <if test="showCard != null ">#{showCard},</if>
+            <if test="showList != null ">#{showList},</if>
+            <if test="notNull != null ">#{notNull},</if>
+            <if test="virtual != null ">#{virtual},</if>
+            <if test="refjson != null ">#{refjson},</if>
+            <if test="tpl != null  and tpl != ''">#{tpl},</if>
+            <if test="formatter != null  and formatter != ''">#{formatter},</if>
+            <if test="tooltip != null  and tooltip != ''">#{tooltip},</if>
+            <if test="maxWidth != null  and maxWidth != ''">#{maxWidth},</if>
+            <if test="minWidth != null  and minWidth != ''">#{minWidth},</if>
+            <if test="width != null  and width != ''">#{width},</if>
+            <if test="fixed != null  and fixed != ''">#{fixed},</if>
+            <if test="prop != null  and prop != ''">#{prop},</if>
+            <if test="align != null  and align != ''">#{align},</if>
+            <if test="label != null  and label != ''">#{label},</if>
+            <if test="type != null  and type != ''">#{type},</if>
+            <if test="billtplcode != null  and billtplcode != ''">#{billtplcode},</if>
+            <if test="rules != null  and rules != ''">#{rules},</if>
+            <if test="query != null  ">#{query},</if>
+            <if test="defaultQuery != null  ">#{defaultQuery},</if>
+            <if test="export != null  ">#{export},</if>
+            <if test="id != null ">#{id},</if>
+         </trim>
+    </insert>
+
+    <update id="update" parameterType="SysBilltplItem">
+        update sys_billtpl_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sortindex != null ">sortIndex = #{sortindex},</if>
+            <if test="showCard != null ">show_card = #{showCard},</if>
+            <if test="showList != null ">show_list = #{showList},</if>
+            <if test="notNull != null ">not_null = #{notNull},</if>
+            <if test="virtual != null ">`virtual` = #{virtual},</if>
+            <if test="refjson != null ">refjson = #{refjson},</if>
+            <if test="tpl != null  ">tpl = #{tpl},</if>
+            <if test="formatter != null ">formatter = #{formatter},</if>
+            <if test="tooltip != null  ">tooltip = #{tooltip},</if>
+            <if test="maxWidth != null ">max_width = #{maxWidth},</if>
+            <if test="minWidth != null ">min_width = #{minWidth},</if>
+            <if test="width != null  ">width = #{width},</if>
+            <if test="fixed != null  ">fixed = #{fixed},</if>
+            <if test="prop != null  ">prop = #{prop},</if>
+            <if test="align != null ">align = #{align},</if>
+            <if test="label != null ">label = #{label},</if>
+            <if test="type != null  ">type = #{type},</if>
+            <if test="billtplcode != null  and billtplcode != ''">billtplcode = #{billtplcode},</if>
+            <if test="rules != null ">rules = #{rules},</if>
+            <if test="query != null  ">query = #{query},</if>
+            <if test="defaultQuery != null  ">default_query = #{defaultQuery},</if>
+            <if test="export != null  ">export = #{export},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+      delete from sys_billtpl_item
+      where id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+      delete from sys_billtpl_item
+      where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

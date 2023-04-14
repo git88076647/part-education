@@ -1,0 +1,92 @@
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为8080
+  port: 8201
+  max-http-header-size: 16KB
+#  port: ${randomServerPort.value[6000,6200]}    #随机端口  
+  servlet:
+    # 应用的访问路径
+    context-path: /
+#  tomcat:
+#    # tomcat的URI编码
+#    uri-encoding: UTF-8
+#    # tomcat最大线程数，默认为200
+#    max-threads: 800
+#    # Tomcat启动初始化的线程数，默认值25
+#    min-spare-threads: 30
+  undertow:
+    io-threads: 16
+    worker-threads: 256
+    buffer-size: 1024
+    direct-buffers: true 
+
+#服务名称
+spring:
+  application:
+    name: log-server
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always   
+
+
+#设置最大超时时间
+ribbon:  
+  eager-load:
+    enabled: true 
+  ServerListRefreshInterval: 10  #刷新服务列表源的间隔时间
+  OkToRetryOnAllOperations: true
+  MaxAutoRetries: 1
+  MaxAutoRetriesNextServer: 1
+  ReadTimeout: 16000  
+  ConnectTimeout: 16000 
+
+#设置最大容错超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 16000 
+
+##feign参数优化
+feign:
+  client:
+    config: 
+      default:  
+        loggerLevel: full  ## 配合logging.level=trace debug用于开发调式日志
+  compression:
+    request:
+      enabled: true
+      mine-types: text/xml,application/xml,application/json  
+      min-request-size: 2048
+    response:
+      enabled: true       
+
+#eureka client 配置          
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://admin:554BCAF092D8D1ED3936C0CB09E91AF1@register.com:1111/eureka  #http://130.75.131.241:8761/eureka,http://130.75.131.248:8762/eureka
+    registry-fetch-interval-seconds: 10  
+    instance-info-replication-interval-seconds: 10  
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+#    instance-id: ${spring.application.name}:${docker.ipAddress}:${spring.application.instance_id:${server.port}}
+#    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${randomServerPort.value[8000,8000]}}
+    lease-renewal-interval-in-seconds: 5  #每隔几秒告诉eureka服务器我还存活，用于心跳检测
+    lease-expiration-duration-in-seconds: 10 #如果心跳检测一直没有发送，10秒后会从eureka服务器中将此服务剔除
+    #注册实例文档
+#    status-page-url: http://${spring.cloud.client.ip-address}:${randomServerPort.value[8000,8000]}/document.html # 随机端口
+    status-page-url:  http://${spring.cloud.client.ip-address}:${server.port}/doc.html
+#    status-page-url: http://${docker.ipAddress}:${server.port}/auth/doc.html # 固定端口
+        

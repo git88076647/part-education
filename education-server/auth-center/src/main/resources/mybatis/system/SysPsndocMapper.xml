@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.system.mapper.SysPsndocMapper">
+    
+    <resultMap type="SysPsndoc" id="SysPsndocResult">
+        <id     property="psnId"       column="psn_id"    />
+        <result property="orgId"       column="org_id"    />
+        <result property="orgName"     column="org_name"    />
+        <result property="deptId"      column="dept_id"    />
+        <result property="deptName"    column="dept_name"    />
+        <result property="deptId1"     column="dept_id1"    />
+        <result property="deptName1"   column="dept_name1"    />
+        <result property="deptId2"     column="dept_id2"    />
+        <result property="deptName2"   column="dept_name2"    />
+        <result property="deptId3"     column="dept_id3"    />
+        <result property="deptName3"   column="dept_name3"    />
+        <result property="postId"      column="post_id"    />
+        <result property="postName"    column="post_name"    />
+        <result property="psnCode"     column="psn_code"    />
+        <result property="psnName"     column="psn_name"    />
+        <result property="email"       column="email"    />
+        <result property="phonenumber" column="phonenumber"    />
+        <result property="homephone"   column="homephone"    />
+        <result property="sex"         column="sex"    />
+        <result property="avatar"      column="avatar"    />
+        <result property="status"      column="status"    />
+        <result property="address"     column="address"    />
+        <result property="dr"          column="dr"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"  column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"  column="update_time"    />
+        <result property="remark"      column="remark"    />
+        <result property="version"     column="version"    />
+    </resultMap>
+
+    <sql id="selectSysPsndocVo">
+        select p.version,post.post_name,d3.dept_name dept_name3,d2.dept_name dept_name2,d1.dept_name dept_name1,d.dept_name,o.org_name,p.psn_id, p.org_id, p.dept_id, p.dept_id1, p.dept_id2, p.dept_id3, p.psn_code, p.psn_name, p.email, p.phonenumber, p.homephone, p.sex, p.avatar, p.status, p.address, p.dr, p.create_by, p.create_time, p.update_by, p.update_time, p.remark 
+        from sys_psndoc p 
+        left join sys_org o on o.org_id=p.org_id 
+        left join sys_dept d on d.dept_id=p.dept_id 
+        left join sys_dept d1 on d1.dept_id=p.dept_id1
+        left join sys_dept d2 on d2.dept_id=p.dept_id2
+        left join sys_dept d3 on d3.dept_id=p.dept_id3
+        left join sys_post post on post.post_id=p.post_id
+        
+    </sql>
+
+    <select id="selectSysPsndocList" parameterType="SysPsndoc" resultMap="SysPsndocResult">
+        <include refid="selectSysPsndocVo"/>
+        where p.dr = 0
+        <if test="orgId != null "> and p.org_id = #{orgId}</if>
+        <if test="deptId != null "> and p.dept_id = #{deptId}</if>
+        <if test="psnCode != null  and psnCode != ''"> and p.psn_code like concat('%', #{psnCode}, '%')</if>
+        <if test="psnName != null  and psnName != ''"> and p.psn_name like concat('%', #{psnName}, '%')</if>
+        <if test="avatar != null  and avatar != ''"> and p.avatar = #{avatar}</if>
+        <if test="status != null  and status != ''"> and p.status = #{status}</if>
+        <if test="address != null  and address != ''"> and p.address = #{address}</if>
+        
+    </select>
+    
+    <select id="selectSysPsndocById" parameterType="Long" resultMap="SysPsndocResult">
+        <include refid="selectSysPsndocVo"/>
+        where p.psn_id = #{psnId}
+    </select>
+        
+    <insert id="insertSysPsndoc" parameterType="SysPsndoc">
+        insert into sys_psndoc
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="psnId != null ">psn_id,</if>
+            <if test="orgId != null ">org_id,</if>
+            <if test="deptId != null ">dept_id,</if>
+            <if test="deptId1 != null ">dept_id1,</if>
+            <if test="deptId2 != null ">dept_id2,</if>
+            <if test="deptId3 != null ">dept_id3,</if>
+            <if test="postId != null ">post_id,</if>
+            <if test="psnCode != null  and psnCode != ''">psn_code,</if>
+            <if test="psnName != null  and psnName != ''">psn_name,</if>
+            <if test="email != null  and email != ''">email,</if>
+            <if test="phonenumber != null  and phonenumber != ''">phonenumber,</if>
+            <if test="homephone != null  and homephone != ''">homephone,</if>
+            <if test="sex != null  and sex != ''">sex,</if>
+            <if test="avatar != null  and avatar != ''">avatar,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="address != null  and address != ''">address,</if>
+            <if test="dr != null ">dr,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="version != null ">version,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="psnId != null ">#{psnId},</if>
+            <if test="orgId != null ">#{orgId},</if>
+            <if test="deptId != null ">#{deptId},</if>
+            <if test="deptId1 != null ">#{deptId1},</if>
+            <if test="deptId2 != null ">#{deptId2},</if>
+            <if test="deptId3 != null ">#{deptId3},</if>
+            <if test="postId != null ">#{postId},</if>
+            <if test="psnCode != null  and psnCode != ''">#{psnCode},</if>
+            <if test="psnName != null  and psnName != ''">#{psnName},</if>
+            <if test="email != null  and email != ''">#{email},</if>
+            <if test="phonenumber != null  and phonenumber != ''">#{phonenumber},</if>
+            <if test="homephone != null  and homephone != ''">#{homephone},</if>
+            <if test="sex != null  and sex != ''">#{sex},</if>
+            <if test="avatar != null  and avatar != ''">#{avatar},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="address != null  and address != ''">#{address},</if>
+            <if test="dr != null  ">#{dr},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysPsndoc" parameterType="SysPsndoc">
+        update sys_psndoc
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orgId != null ">org_id = #{orgId},</if>
+            <if test="deptId != null ">dept_id = #{deptId},</if>
+            <if test="deptId1 != null ">dept_id1 = #{deptId1},</if>
+            <if test="deptId2 != null ">dept_id2 = #{deptId2},</if>
+            <if test="deptId3 != null ">dept_id3 = #{deptId3},</if>
+            <if test="postId != null ">post_id = #{postId},</if>
+            <if test="psnCode != null  and psnCode != ''">psn_code = #{psnCode},</if>
+            <if test="psnName != null  and psnName != ''">psn_name = #{psnName},</if>
+            <if test="email != null  ">email = #{email},</if>
+            <if test="phonenumber != null ">phonenumber = #{phonenumber},</if>
+            <if test="homephone != null  ">homephone = #{homephone},</if>
+            <if test="sex != null  and sex != ''">sex = #{sex},</if>
+            <if test="avatar != null  ">avatar = #{avatar},</if>
+            <if test="status != null  ">status = #{status},</if>
+            <if test="address != null  ">address = #{address},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null ">remark = #{remark},</if>
+            <if test="version != null ">version = #{version},</if>
+        </trim>
+        where psn_id = #{psnId}
+    </update>
+
+    <delete id="deleteSysPsndocById" parameterType="Long">
+        update sys_psndoc set dr=1 where psn_id = #{psnId}
+    </delete>
+
+    <delete id="deleteSysPsndocByIds" parameterType="String">
+        update sys_psndoc set dr=1 where psn_id in 
+        <foreach item="psnId" collection="array" open="(" separator="," close=")">
+            #{psnId}
+        </foreach>
+    </delete>
+    
+</mapper>

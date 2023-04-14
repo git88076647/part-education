@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.system.mapper.SysPsnjobMapper">
+    
+    <resultMap type="SysPsnjob" id="SysPsnjobResult">
+        <result property="psnjobId"    column="psnjob_id"    />
+        <result property="psnId"    column="psn_id"    />
+        <result property="orgId"    column="org_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="postId"    column="post_id"    />
+        <result property="effecttime"    column="effecttime"    />
+        <result property="invalidtime"    column="invalidtime"    />
+        <result property="mainjob"    column="mainjob"    />
+        <result property="status"    column="status"    />
+        <result property="dr"    column="dr"    />
+        <result property="remark"    column="remark"    />
+        <result property="version"    column="version"    />
+    </resultMap>
+
+    <sql id="selectSysPsnjobVo">
+        select post.post_name postIdName,d.dept_name deptIdName,o.org_name orgIdName,sys_psnjob.psnjob_id, sys_psnjob.psn_id, sys_psnjob.org_id, sys_psnjob.dept_id, sys_psnjob.post_id, sys_psnjob.effecttime, sys_psnjob.invalidtime, sys_psnjob.mainjob, sys_psnjob.status, sys_psnjob.dr, sys_psnjob.remark, sys_psnjob.version from sys_psnjob
+        left join sys_org o on o.org_id=sys_psnjob.org_id 
+        left join sys_dept d on d.dept_id=sys_psnjob.dept_id 
+        left join sys_post post on post.post_id=sys_psnjob.post_id
+    </sql>
+
+    <select id="selectList" parameterType="SysPsnjob" resultMap="SysPsnjobResult">
+        <include refid="selectSysPsnjobVo"/>
+        <where>
+            sys_psnjob.dr = 0
+            <if test="orgId != null "> and sys_psnjob.org_id = #{orgId}</if>
+            <if test="deptId != null "> and sys_psnjob.dept_id = #{deptId}</if>
+            <if test="postId != null "> and sys_psnjob.post_id = #{postId}</if>
+            <if test="effecttime != null "> and sys_psnjob.effecttime = #{effecttime}</if>
+            <if test="invalidtime != null "> and sys_psnjob.invalidtime = #{invalidtime}</if>
+            <if test="mainjob != null  and mainjob != ''"> and sys_psnjob.mainjob = #{mainjob}</if>
+            <if test="status != null "> and sys_psnjob.status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectById" parameterType="Long" resultMap="SysPsnjobResult">
+        <include refid="selectSysPsnjobVo"/>
+        where sys_psnjob.psnjob_id = #{psnjobId}
+    </select>
+
+    <select id="selectByParentId" parameterType="Long" resultMap="SysPsnjobResult">
+        <include refid="selectSysPsnjobVo"/>
+        where sys_psnjob.dr = 0 and sys_psnjob.psn_id = #{parentId}
+    </select>
+        
+    <insert id="insert" parameterType="SysPsnjob">
+        insert into sys_psnjob
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="psnjobId != null ">psnjob_id,</if>
+            <if test="psnId != null ">psn_id,</if>
+            <if test="orgId != null ">org_id,</if>
+            <if test="deptId != null ">dept_id,</if>
+            <if test="postId != null ">post_id,</if>
+            <if test="effecttime != null ">effecttime,</if>
+            <if test="invalidtime != null ">invalidtime,</if>
+            <if test="mainjob != null  and mainjob != ''">mainjob,</if>
+            <if test="status != null ">status,</if>
+            <if test="dr != null ">dr,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+            <if test="version != null ">version,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="psnjobId != null ">#{psnjobId},</if>
+            <if test="psnId != null ">#{psnId},</if>
+            <if test="orgId != null ">#{orgId},</if>
+            <if test="deptId != null ">#{deptId},</if>
+            <if test="postId != null ">#{postId},</if>
+            <if test="effecttime != null ">#{effecttime},</if>
+            <if test="invalidtime != null ">#{invalidtime},</if>
+            <if test="mainjob != null  and mainjob != ''">#{mainjob},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="dr != null ">#{dr},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+            <if test="version != null ">#{version},</if>
+         </trim>
+    </insert>
+    
+    <insert id="insertBatch" >
+        insert into sys_psnjob(psnjob_id,psn_id,org_id,dept_id,post_id,effecttime,invalidtime,mainjob,status,dr,remark,version) values
+        <foreach item="item" index="index" collection="list" separator=",">
+			(#{item.psnjobId},#{item.psnId},#{item.orgId},#{item.deptId},#{item.postId},#{item.effecttime},#{item.invalidtime},#{item.mainjob},#{item.status},#{item.dr},#{item.remark},#{item.version})
+		</foreach>
+    </insert>
+
+    <update id="update" parameterType="SysPsnjob">
+        update sys_psnjob
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="psnId != null ">psn_id = #{psnId},</if>
+            <if test="orgId != null ">org_id = #{orgId},</if>
+            <if test="deptId != null ">dept_id = #{deptId},</if>
+            <if test="postId != null ">post_id = #{postId},</if>
+            <if test="effecttime != null ">effecttime = #{effecttime},</if>
+            <if test="invalidtime != null ">invalidtime = #{invalidtime},</if>
+            <if test="mainjob != null and mainjob != ''">mainjob = #{mainjob},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="dr != null ">dr = #{dr},</if>
+            <if test="remark != null ">remark = #{remark},</if>
+            <if test="version != null ">version = #{version},</if>
+        </trim>
+        where psnjob_id = #{psnjobId}
+    </update>
+    
+    <update id="updateBatch" >
+    	<foreach item="item" index="index" collection="list" separator=",">
+	        update sys_psnjob
+	        <trim prefix="SET" suffixOverrides=",">
+	            <if test="item.psnjobId != null ">psn_id = #{item.psnjobId},</if>
+	            <if test="item.orgId != null ">org_id = #{item.orgId},</if>
+	            <if test="item.deptId != null ">dept_id = #{item.deptId},</if>
+	            <if test="item.postId != null ">post_id = #{item.postId},</if>
+	            <if test="item.effecttime != null ">effecttime = #{item.effecttime},</if>
+	            <if test="item.invalidtime != null ">invalidtime = #{item.invalidtime},</if>
+	            <if test="item.mainjob != null and mainjob != ''">mainjob = #{item.mainjob},</if>
+	            <if test="item.status != null ">status = #{item.status},</if>
+	            <if test="item.dr != null ">dr = #{item.dr},</if>
+	            <if test="item.remark != null ">remark = #{item.remark},</if>
+	            <if test="item.version != null ">version = #{item.version},</if>
+	        </trim>
+	        where psnjob_id = #{item.psnjobId}
+        </foreach>
+    </update>
+
+    <delete id="deleteById" parameterType="Long">
+      update sys_psnjob set dr = 1 
+      where psnjob_id = #{psnjobId}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="String">
+      update sys_psnjob set dr = 1 
+      where psnjob_id in 
+        <foreach item="psnjobId" collection="array" open="(" separator="," close=")">
+            #{psnjobId}
+        </foreach>
+    </delete>
+    
+    <delete id="deleteByParentId" parameterType="Long">
+      update sys_psnjob set dr = 1 
+      where psn_id = #{parentId}
+    </delete>
+
+    <delete id="deleteByParentIds" parameterType="String">
+      update sys_psnjob set dr = 1 
+      where psn_id in 
+        <foreach item="psnId" collection="array" open="(" separator="," close=")">
+            #{psnId}
+        </foreach>
+    </delete>
+    
+</mapper>

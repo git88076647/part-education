@@ -1,0 +1,6 @@
+# 数据源配置
+spring:
+  data:
+    mongodb:
+      #              用户名:密码 @地址     : 端口/数据库?验证库&验证类型
+      uri: mongodb://sa:123456@127.0.0.1:27017/klemc?authSource=admin&authMechanism=SCRAM-SHA-1

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.report.mapper.RepSemanticMapper">
+
+    <resultMap type="RepSemantic" id="RepSemanticResult">
+        <result property="pkSemantic" column="pk_semantic"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="datasource" column="datasource"/>
+        <result property="filednamejson" column="filednamejson"/>
+        <result property="formathtml" column="formathtml"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="version" column="version"/>
+        <result property="description" column="description"/>
+        <result property="dr" column="dr"/>
+        <result property="statue" column="statue"/>
+        <result property="orgId" column="org_id"/>
+        <result property="querclass" column="querclass"/>
+        <result property="scripttxt" column="scripttxt"/>
+    </resultMap>
+
+    <sql id="selectRepSemanticVo">
+        select pk_semantic, code, name, datasource, filednamejson, formathtml,
+               create_by, create_time, update_by, update_time, version, description,
+         dr, statue, org_id, querclass,scripttxt from rep_semantic
+    </sql>
+
+    <select id="selectRepSemanticList" parameterType="RepSemantic" resultMap="RepSemanticResult">
+        <include refid="selectRepSemanticVo"/>
+        <where>
+            <if test="code != null  and code != ''">and code like concat('%', #{code}, '%')</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="datasource != null  and datasource != ''">and datasource = #{datasource}</if>
+            <if test="filednamejson != null  and filednamejson != ''">and filednamejson = #{filednamejson}</if>
+            <if test="formathtml != null  and formathtml != ''">and formathtml = #{formathtml}</if>
+            <if test="description != null  and description != ''">and description = #{description}</if>
+            <if test="statue != null ">and statue = #{statue}</if>
+            <if test="orgId != null ">and org_id = #{orgId}</if>
+            <if test="querclass != null  and querclass != ''">and querclass = #{querclass}</if>
+            <if test="scripttxt != null  and scripttxt != ''">and scripttxt like concat('%', #{scripttxt}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectRepSemanticById" parameterType="Long" resultMap="RepSemanticResult">
+        <include refid="selectRepSemanticVo"/>
+        where pk_semantic = #{pkSemantic}
+    </select>
+
+    <insert id="insertRepSemantic" parameterType="RepSemantic">
+        insert into rep_semantic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkSemantic != null ">pk_semantic,</if>
+            <if test="code != null  and code != ''">code,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="datasource != null  and datasource != ''">datasource,</if>
+            <if test="filednamejson != null  and filednamejson != ''">filednamejson,</if>
+            <if test="formathtml != null  and formathtml != ''">formathtml,</if>
+            <if test="createBy != null ">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null ">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="version != null ">version,</if>
+            <if test="description != null  and description != ''">description,</if>
+            <if test="dr != null ">dr,</if>
+            <if test="statue != null ">statue,</if>
+            <if test="orgId != null ">org_id,</if>
+            <if test="querclass != null  and querclass != ''">querclass,</if>
+            <if test="scripttxt != null  and scripttxt != ''">scripttxt,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkSemantic != null ">#{pkSemantic},</if>
+            <if test="code != null  and code != ''">#{code},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="datasource != null  and datasource != ''">#{datasource},</if>
+            <if test="filednamejson != null  and filednamejson != ''">#{filednamejson},</if>
+            <if test="formathtml != null  and formathtml != ''">#{formathtml},</if>
+            <if test="createBy != null ">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null ">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="description != null  and description != ''">#{description},</if>
+            <if test="dr != null ">#{dr},</if>
+            <if test="statue != null ">#{statue},</if>
+            <if test="orgId != null ">#{orgId},</if>
+            <if test="querclass != null  and querclass != ''">#{querclass},</if>
+            <if test="scripttxt != null  and scripttxt != ''">#{scripttxt},</if>
+        </trim>
+    </insert>
+
+    <update id="updateRepSemantic" parameterType="RepSemantic">
+        update rep_semantic
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null  and code != ''">code = #{code},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="datasource != null  and datasource != ''">datasource = #{datasource},</if>
+            <if test="filednamejson != null">filednamejson = #{filednamejson},</if>
+            <if test="formathtml != null  and formathtml != ''">formathtml = #{formathtml},</if>
+            <if test="createBy != null ">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null ">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="description != null  and description != ''">description = #{description},</if>
+            <if test="dr != null ">dr = #{dr},</if>
+            <if test="statue != null ">statue = #{statue},</if>
+            <if test="orgId != null ">org_id = #{orgId},</if>
+            <if test="querclass != null  and querclass != ''">querclass = #{querclass},</if>
+            <if test="scripttxt != null  and scripttxt != ''">scripttxt = #{scripttxt},</if>
+        </trim>
+        where pk_semantic = #{pkSemantic}
+    </update>
+
+    <delete id="deleteRepSemanticById" parameterType="Long">
+        delete from rep_semantic where pk_semantic = #{pkSemantic}
+    </delete>
+
+    <delete id="deleteRepSemanticByIds" parameterType="String">
+        delete from rep_semantic where pk_semantic in
+        <foreach item="pkSemantic" collection="array" open="(" separator="," close=")">
+            #{pkSemantic}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,132 @@
+package ${packageName}.service.impl;
+
+import java.util.List;
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime' || $column.javaField == 'updateTime')
+import com.czyl.common.utils.DateUtils;
+#break
+#end
+#end
+import com.czyl.common.utils.AppContextUtils;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.${ClassName};
+import ${packageName}.service.I${ClassName}Service;
+
+/**
+ * ${functionName}Service业务层处理
+ * 
+ * @author ${author}
+ * @date ${datetime}
+ */
+@Service
+public class ${ClassName}ServiceImpl implements I${ClassName}Service{
+    @Autowired
+    private ${ClassName}Mapper mapper;
+
+    /**
+     * 查询${functionName}
+     * 
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return ${functionName}
+     */
+    @Override
+    public ${ClassName} selectById(${pkColumn.javaType} ${pkColumn.javaField}){
+        return mapper.selectById(${pkColumn.javaField});
+    }
+
+    /**
+     * 查询${functionName}列表
+     * 
+     * @param entity ${functionName}
+     * @return ${functionName}
+     */
+    @Override
+    public List<${ClassName}> selectList(${ClassName} entity){
+        return selectList(entity,false);
+    }
+    /**
+     * 查询${functionName}列表
+     *
+     * @param entity ${functionName}
+     * @param fill 是否填充虚字段
+     * @return ${functionName}
+     */
+    @Override
+    public List<${ClassName}> selectList(${ClassName} entity,boolean fill){
+        List<${ClassName}> list = mapper.selectList(entity);
+        if(fill){
+            //TODO 根据业务进行填充虚字段
+
+        }
+        return list;
+    }
+
+    /**
+     * 新增${functionName}
+     * 
+     * @param entity ${functionName}
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int insert(${ClassName} entity){
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        entity.setCreateTime(DateUtils.getNowDate());
+#elseif( $column.javaField == 'createBy' )
+        if(entity.getCreateBy() == null || entity.getCreateBy() == 0) {
+            entity.setCreateBy(AppContextUtils.getUserId());
+        }
+#end
+#end
+        return mapper.insert(entity);
+    }
+
+    /**
+     * 修改${functionName}
+     * 
+     * @param entity ${functionName}
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int update(${ClassName} entity){
+#foreach ($column in $columns)
+#if($column.javaField == 'updateTime')
+        entity.setUpdateTime(DateUtils.getNowDate());
+#elseif( $column.javaField == 'updateBy' )
+        if(AppContextUtils.getUserId2() != null && AppContextUtils.getUserId2() > 0) {
+            entity.setUpdateBy(AppContextUtils.getUserId2());
+        }
+#end
+#end
+        return mapper.update(entity);
+    }
+
+    /**
+     * 批量删除${functionName}
+     * 
+     * @param ${pkColumn.javaField}s 需要删除的${functionName}ID
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int deleteByIds(${pkColumn.javaType}[] ${pkColumn.javaField}s){
+        return mapper.deleteByIds(${pkColumn.javaField}s);
+    }
+
+    /**
+     * 删除${functionName}信息
+     * 
+     * @param ${pkColumn.javaField} ${functionName}ID
+     * @return 结果
+     */
+    @Override
+    @Transactional
+    public int deleteById(${pkColumn.javaType} ${pkColumn.javaField}){
+        return mapper.deleteById(${pkColumn.javaField});
+    }
+}

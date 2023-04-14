@@ -1,0 +1,82 @@
+# config
+czyl:
+  openswagger:
+    - auth-api
+    - tracemed-api
+spring:
+  cloud:
+    gateway: 
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 90s
+      routes:
+      - id: auth-api
+        uri: lb://auth-server
+        order: 8000
+        predicates:
+        - Path=/auth-api/**
+        filters:
+        - StripPrefix=1
+      - id: tool
+        uri: lb://auth-server
+        order: 8001
+        predicates:
+        - Path=/tool/**
+        filters:
+        - StripPrefix=1
+      - id: log-api
+        uri: lb://log-server
+        order: 8002
+        predicates: 
+        - Path=/log-api/**
+        filters: 
+        - StripPrefix=1
+      - id: monitor-api
+        uri: lb://monitor-server
+        order: 8003
+        predicates:
+        - Path=/monitor-api/**
+        filters:
+        - StripPrefix=1
+      - id: file-api
+        uri: lb://file-server
+        order: 8004
+        predicates:
+        - Path=/file-api/**
+        filters:
+        - StripPrefix=1
+      - id: job-api
+        uri: lb://job-server
+        order: 8005
+        predicates:
+        - Path=/job-api/**
+        filters:
+        - StripPrefix=1
+      - id: report-api
+        uri: lb://report-server
+        order: 8006
+        predicates:
+        - Path=/report-api/**
+        filters:
+        - StripPrefix=1
+      - id: example1-api
+        uri: lb://example1-server
+        order: 8007
+        predicates:
+        - Path=/example1-api/**
+        filters:
+        - StripPrefix=1
+      - id: emc-api
+        uri: lb://emc-server
+        order: 8008
+        predicates:
+        - Path=/emc-api/**
+        filters:
+        - StripPrefix=1
+      - id: cm-api
+        uri: lb://cm-server
+        order: 8009
+        predicates:
+        - Path=/cm-api/**
+        filters:
+        - StripPrefix=1

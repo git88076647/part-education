@@ -1,0 +1,40 @@
+czyl:
+  openswagger:
+    - auth-api
+    - tracemed-api
+# 日志配置
+logging:
+  level:
+    com.czyl: debug
+    org.springframework: warn
+
+# Spring配置
+spring:
+  sleuth:
+    rxjava:
+      schedulers:
+        hook:
+          enabled: false
+    reactor:
+      enabled: false
+  application:
+    name: zuul-server
+  profiles: 
+    active: zuul
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+      
+  # 文件上传
+  servlet:
+     multipart:
+       # 单个文件大小
+       max-file-size:  100MB
+       # 设置总上传的文件大小
+       max-request-size:  200MB
+
+  

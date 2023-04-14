@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.czyl.project.mapper.MsgMapper">
+
+<resultMap type="Msg" id="MsgResult">
+		<result property="id" column="id" />
+		<result property="vmsg" column="vmsg" />
+		<result property="vtype" column="vtype" />
+		<result property="senddate" column="senddate" />
+	</resultMap>
+
+	<sql id="selectMsgVo">
+		select * t_material.id, t_material.name,t_material.version from t_msg
+	</sql>
+
+	<select id="selectList" parameterType="Msg"
+		resultMap="MsgResult">
+		<include refid="selectMsgVo" />
+		<where>
+			<if test="vmsg != null  and vmsg != ''"> and t_msg.vmsg like concat('%', #{vmsg}, '%')</if>
+			<if test="vtype != null  "> and t_msg.vtype = #{vmsg}</if>
+			<if test="senddate != null  "> and t_msg.senddate = #{senddate}</if>
+		</where>
+	</select>
+
+	<select id="selectById" parameterType="Long"
+		resultMap="MsgResult">
+		<include refid="selectMsgVo" />
+		where t_msg.id = #{id}
+	</select>
+
+	<insert id="insertBatch" parameterType="java.util.List">
+		insert into t_msg(id,senddate,vmsg,vtype)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.id},
+			#{item.senddate},
+			#{item.vmsg},
+			#{item.vtype}
+			)
+		</foreach>
+	</insert>
+
+</mapper>

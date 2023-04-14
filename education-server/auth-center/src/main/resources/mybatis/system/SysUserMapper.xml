@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.czyl.project.system.mapper.SysUserMapper">
+
+	<resultMap type="SysUser" id="SysUserResult">
+		<id     property="userId"       column="user_id"      />
+		<result property="orgId"        column="org_id"      />
+		<result property="psnId"        column="psn_id"      />
+		<result property="userCode"     column="user_code"    />
+		<result property="nickName"     column="nick_name"    />
+		<result property="email"        column="email"        />
+		<result property="phonenumber"  column="phonenumber"  />
+		<result property="sex"          column="sex"          />
+		<result property="avatar"       column="avatar"       />
+		<result property="password"     column="password"     />
+		<result property="status"       column="status"       />
+		<result property="dr"           column="dr"     />
+		<result property="loginIp"      column="login_ip"     />
+		<result property="loginDate"    column="login_date"   />
+		<result property="createBy"     column="create_by"    />
+		<result property="createTime"   column="create_time"  />
+		<result property="updateBy"     column="update_by"    />
+		<result property="updateTime"   column="update_time"  />
+		<result property="remark"       column="remark"       />
+		<result property="salt"         column="salt"       />
+		<result property="version"      column="version"       />
+		<result property="wechatopenid" column="wechatopenid"       />
+		<result property="userType"     column="user_type"       />
+		<association property="dept"    column="dept_id" javaType="SysDept" resultMap="deptResult" />
+		<association property="org"     column="org_id" javaType="SysOrg" resultMap="orgResult" />
+		<collection  property="roles"   javaType="java.util.List"        resultMap="roleResult" />
+	</resultMap>
+	
+	<resultMap id="orgResult" type="SysOrg">
+		<id     property="orgId"   column="org_id"     />
+		<result property="parentId" column="parent_id"   />
+		<result property="orgName" column="org_name"   />
+		<result property="orderNum" column="order_num"   />
+		<result property="leader"   column="leader"      />
+		<result property="status"   column="org_status" />
+	</resultMap>
+	
+	<resultMap id="deptResult" type="SysDept">
+		<id     property="deptId"   column="dept_id"     />
+		<result property="parentId" column="parent_id"   />
+		<result property="deptName" column="dept_name"   />
+		<result property="orderNum" column="order_num"   />
+		<result property="leader"   column="leader"      />
+		<result property="status"   column="dept_status" />
+	</resultMap>
+	
+	<resultMap id="roleResult" type="SysRole">
+		<id     property="roleId"       column="role_id"        />
+		<result property="roleName"     column="role_name"      />
+		<result property="roleKey"      column="role_key"       />
+		<result property="roleSort"     column="role_sort"      />
+		<result property="dataScope"    column="data_scope"    />
+		<result property="status"       column="role_status"    />
+	</resultMap>
+	
+	<resultMap id="roleOrgResult" type="SysRoleOrg">
+		<result property="orgId"       column="org_id"    />
+		<result property="roleId"      column="role_id"    />
+	</resultMap>
+	
+	<select id="selectRoleOrgByUserId" resultMap="roleOrgResult">
+	   SELECT ro.org_id,ro.role_id
+		FROM sys_user_role ur 
+		join sys_role_org ro on ro.role_id = ur.role_id 
+		where ur.user_id = #{user_id}
+	</select>
+	
+	<sql id="selectLoginUserVo">
+        select u.salt,u.password,u.user_type,u.version,u.org_id,u.user_id, u.psn_id, u.user_code, u.nick_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, u.dr, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, 
+        d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
+        r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status,
+        o.org_name,u.wechatopenid
+        from sys_user u
+       	left join sys_psndoc psn on psn.psn_id=u.psn_id
+	    left join sys_dept d on psn.dept_id = d.dept_id
+	    left join sys_user_role ur on u.user_id = ur.user_id
+	    left join sys_role r on r.role_id = ur.role_id
+	    left join sys_org o on o.org_id = u.org_id
+		
+    </sql>
+    
+    <sql id="selectUserVo">
+       select u.user_type,u.version,u.org_id,u.user_id, u.psn_id, u.user_code, u.nick_name, u.email, u.avatar, u.phonenumber, u.sex, u.status, u.dr, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark,
+       o.org_name,u.wechatopenid 
+       from sys_user u
+       left join sys_org o on o.org_id = u.org_id
+    </sql>
+    
+    <select id="selectUserList" parameterType="SysUser" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.dr = 0 
+		<if test="roleName != null and roleName != ''">
+			AND u.user_id in ( select ur.user_id from sys_user_role ur join sys_role r on ur.role_id=r.role_id where r.role_name like concat('%', #{roleName}, '%'))
+		</if>
+		<if test="userCode != null and userCode != ''">
+			AND u.user_code like concat('%', #{userCode}, '%')
+		</if>
+		<if test="nickName != null and nickName != ''">
+			AND u.nick_Name like concat('%', #{nickName}, '%')
+		</if>
+		<if test="searchValue != null and searchValue != ''">
+			AND (u.nick_Name like concat('%', #{searchValue}, '%') or u.user_code like concat('%', #{searchValue}, '%') )
+		</if>
+		<if test="status != null and status != ''">
+			AND u.status = #{status}
+		</if>
+		<if test="userType != null and userType != ''">
+			AND u.user_type = #{userType}
+		</if>
+		<if test="phonenumber != null and phonenumber != ''">
+			AND u.phonenumber like concat('%', #{phonenumber}, '%')
+		</if>
+		<if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+		</if>
+		<if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+		</if>
+		<if test="orgId != null and orgId != 0">
+			AND (u.org_id = #{orgId} or exists( SELECT 1 FROM sys_org t where u.org_id = t.org_id and find_in_set(t.org_id,queryOrgChildList(#{orgId}))))
+		</if>
+		<!-- 数据范围过滤 -->
+		${dataScope}
+	</select>
+	
+	<select id="selectUserByUserCode" parameterType="String" resultMap="SysUserResult">
+	    <include refid="selectLoginUserVo"/>
+		where u.dr = 0 and u.user_code = #{userCode}
+	</select>
+	
+	<select id="selectUserByWeChatOpenId" parameterType="String" resultMap="SysUserResult">
+	    <include refid="selectLoginUserVo"/>
+		where u.dr = 0 and u.wechatopenid = #{wechatopenid}
+	</select>
+	
+	<select id="selectUserById" parameterType="Long" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where u.user_id = #{userId}
+	</select>
+	
+	<select id="checkUserCodeUnique" resultType="int">
+		select count(1) from sys_user where dr = 0 and user_code = #{userCode}
+		<if test="userId != null and userId > 0">
+			and user_id !=#{userId}
+		</if>
+		limit 1
+	</select>
+	
+	<select id="checkPhoneUnique" parameterType="String" resultMap="SysUserResult">
+		select user_id, phonenumber from sys_user where dr = 0 and phonenumber = #{phonenumber}
+		<if test="userId != null and userId > 0">
+			and user_id !=#{userId}
+		</if>
+		limit 1
+	</select>
+	
+	<select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
+		select user_id, email from sys_user where dr = 0 and email = #{email}
+		<if test="userId != null and userId > 0">
+			and user_id !=#{userId}
+		</if>
+		limit 1
+	</select>
+	
+	<insert id="insertUser" parameterType="SysUser" useGeneratedKeys="true" keyProperty="userId">
+ 		insert into sys_user(
+ 			<if test="userId != null ">user_id,</if>
+ 			<if test="orgId != null and orgId != 0">org_id,</if>
+ 			<if test="psnId != null and psnId != 0">psn_id,</if>
+ 			<if test="userCode != null and userCode != ''">user_code,</if>
+ 			<if test="nickName != null and nickName != ''">nick_name,</if>
+ 			<if test="email != null and email != ''">email,</if>
+ 			<if test="avatar != null and avatar != ''">avatar,</if>
+ 			<if test="phonenumber != null and phonenumber != ''">phonenumber,</if>
+ 			<if test="sex != null and sex != ''">sex,</if>
+ 			<if test="password != null and password != ''">password,</if>
+ 			<if test="status != null and status != ''">status,</if>
+ 			<if test="createBy != null and createBy != ''">create_by,</if>
+ 			<if test="remark != null ">remark,</if>
+ 			<if test="version != null ">version,</if>
+ 			<if test="userType != null ">user_type,</if>
+ 			<if test="salt != null ">salt,</if>
+ 			<if test="wechatopenid != null ">wechatopenid,</if>
+ 			create_time
+ 		)values(
+ 			<if test="userId != null ">#{userId},</if>
+ 			<if test="orgId != null and orgId != ''">#{orgId},</if>
+ 			<if test="psnId != null and psnId != ''">#{psnId},</if>
+ 			<if test="userCode != null and userCode != ''">#{userCode},</if>
+ 			<if test="nickName != null and nickName != ''">#{nickName},</if>
+ 			<if test="email != null and email != ''">#{email},</if>
+ 			<if test="avatar != null and avatar != ''">#{avatar},</if>
+ 			<if test="phonenumber != null and phonenumber != ''">#{phonenumber},</if>
+ 			<if test="sex != null and sex != ''">#{sex},</if>
+ 			<if test="password != null and password != ''">#{password},</if>
+ 			<if test="status != null and status != ''">#{status},</if>
+ 			<if test="createBy != null and createBy != ''">#{createBy},</if>
+ 			<if test="remark != null ">#{remark},</if>
+ 			<if test="version != null ">#{version},</if>
+ 			<if test="userType != null ">#{userType},</if>
+ 			<if test="salt != null ">#{salt},</if>
+ 			<if test="wechatopenid != null ">#{wechatopenid},</if>
+ 			sysdate()
+ 		)
+	</insert>
+	
+	<update id="updateUser" parameterType="SysUser">
+ 		update sys_user
+ 		<set>
+ 			<if test="orgId != null and orgId != 0 ">org_id = #{orgId},</if>
+ 			<if test="salt != null and salt != '' ">salt = #{salt},</if>
+ 			<if test="psnId != null ">psn_id = #{psnId},</if>
+ 			<if test="userCode != null and userCode != ''">user_code = #{userCode},</if>
+ 			<if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
+ 			<if test="email != null ">email = #{email},</if>
+ 			<if test="phonenumber != null ">phonenumber = #{phonenumber},</if>
+ 			<if test="sex != null and sex != ''">sex = #{sex},</if>
+ 			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
+ 			<if test="status != null ">status = #{status},</if>
+ 			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
+ 			<if test="loginDate != null">login_date = #{loginDate},</if>
+ 			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+ 			<if test="remark != null">remark = #{remark},</if>
+ 			<if test="version != null">version = #{version},</if>
+ 			<if test="wechatopenid != null">wechatopenid = #{wechatopenid},</if>
+ 			<if test="userType != null and userType != '' ">user_type = #{userType},</if>
+ 			update_time = sysdate()
+ 		</set>
+ 		where user_id = #{userId}
+	</update>
+	
+	<update id="updateUserStatus" parameterType="SysUser">
+ 		update sys_user set status = #{status},version = version +1 where user_id = #{userId}
+	</update>
+	
+	<update id="updateUserAvatar" parameterType="SysUser">
+ 		update sys_user set avatar = #{avatar},version = version +1 where user_id = #{userId}
+	</update>
+	
+	<update id="resetUserPwd" parameterType="SysUser">
+ 		update sys_user set password = #{password},version = version +1,salt=#{salt},update_by=#{updateBy} where user_id = #{userId}
+	</update>
+	
+	<delete id="deleteUserById" parameterType="Long">
+ 		update sys_user set dr = 1,version = version +1 where user_id = #{userId}
+ 	</delete>
+ 	
+ 	<delete id="deleteUserByIds" parameterType="Long">
+ 		update sys_user set dr = 1,version = version +1 where user_id in
+ 		<foreach collection="array" item="userId" open="(" separator="," close=")">
+ 			#{userId}
+        </foreach> 
+ 	</delete>
+	
+</mapper> 

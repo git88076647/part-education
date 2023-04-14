@@ -1,0 +1,12 @@
+# 数据源配置
+spring:
+
+  # 缓存 redis 配置
+  redis:
+    # 地址 如果要用单机redis 注释 cluster及以下，启用host
+    host: db.com
+    # 端口，默认为6379
+    port: 6379
+    #password: czyl2010
+    # 连接超时时间
+    timeout: 12s
